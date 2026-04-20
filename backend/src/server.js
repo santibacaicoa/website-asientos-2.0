@@ -7,8 +7,8 @@ async function startServer() {
     await db.query("SELECT NOW()");
     console.log("Conexión a Neon OK");
 
-    app.listen(env.port, () => {
-      console.log(`Servidor corriendo en http://localhost:${env.port}`);
+    app.listen(env.port, "0.0.0.0", () => {
+      console.log(`Servidor corriendo en puerto ${env.port}`);
     });
   } catch (error) {
     console.error("Error al iniciar el servidor:", error);
