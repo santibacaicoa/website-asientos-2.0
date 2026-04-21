@@ -3,12 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Website Asientos</title>
+    <title>Website Asientos - Acceso</title>
+    <link rel="stylesheet" href="../css/pages/login.css" />
   </head>
   <body>
-    <h1>Login</h1>
-    <p>Prueba de conexión con backend en consola.</p>
+    <main class="auth-page auth-page--landing">
+      <section class="auth-layout">
+        <div class="auth-layout__visual" aria-hidden="true">
+          <div class="auth-city-bg"></div>
+        </div>
 
-    <script type="module" src="../js/pages/login.js"></script>
+        <div class="auth-layout__panel">
+          <div class="auth-panel">
+            <div class="auth-panel__logo">
+              <img
+                src="../../public/assets/images/ui/logo-assurant.png"
+                alt="Assurant"
+              />
+            </div>
+
+            <div class="auth-panel__actions">
+              <a
+                class="auth-button auth-button--secondary"
+                href="./login-form.html"
+              >
+                Iniciar sesión
+              </a>
+
+              <div class="auth-divider" aria-hidden="true">
+                <span class="auth-divider__line"></span>
+                <span class="auth-divider__dot"></span>
+                <span class="auth-divider__line"></span>
+              </div>
+
+              <a
+                class="auth-button auth-button--primary"
+                href="./register-step-1.html"
+              >
+                Registrarse
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   </body>
 </html>

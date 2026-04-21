@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro - Paso 2</title>
+    <link rel="stylesheet" href="../css/pages/register.css" />
+  </head>
+  <body>
+    <main class="auth-page auth-page--register-step-2">
+      <section class="auth-layout">
+        <div class="auth-layout__visual" aria-hidden="true">
+          <div class="auth-city-bg"></div>
+        </div>
+
+        <div class="auth-layout__panel">
+          <div class="auth-panel">
+            <div class="auth-panel__logo">
+              <img
+                src="../../public/assets/images/ui/logo-assurant.png"
+                alt="Assurant"
+              />
+            </div>
+
+            <form
+              class="auth-form auth-form--register-token"
+              id="registerStep2Form"
+              novalidate
+            >
+              <div class="auth-field">
+                <label class="auth-field__label" for="registerNombre"
+                  >Nombre</label
+                >
+                <input
+                  class="auth-field__input"
+                  type="text"
+                  id="registerNombre"
+                  name="nombre"
+                  autocomplete="given-name"
+                  required
+                />
+              </div>
+
+              <div class="auth-field">
+                <label class="auth-field__label" for="registerApellido"
+                  >Apellido</label
+                >
+                <input
+                  class="auth-field__input"
+                  type="text"
+                  id="registerApellido"
+                  name="apellido"
+                  autocomplete="family-name"
+                  required
+                />
+              </div>
+
+              <div class="auth-token-row">
+                <div class="auth-field auth-field--token">
+                  <label class="auth-field__label" for="registerToken"
+                    >Token</label
+                  >
+                  <input
+                    class="auth-field__input"
+                    type="text"
+                    id="registerToken"
+                    name="token"
+                    autocomplete="one-time-code"
+                    required
+                  />
+                </div>
+
+                <button
+                  class="auth-button auth-button--disabled auth-button--token"
+                  type="submit"
+                >
+                  Confirmar
+                </button>
+              </div>
+
+              <p class="auth-help-text">
+                Se ha enviado un token a su mail, si no lo recibe
+                <a class="auth-link" href="#" id="resendTokenLink"
+                  >clickear aquí para reenviar</a
+                >
+              </p>
+
+              <div class="auth-form__actions">
+                <button
+                  class="auth-button auth-button--primary auth-button--small"
+                  type="button"
+                  id="enterAfterRegister"
+                >
+                  Entrar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="../js/pages/register-step-2.js"></script>
+  </body>
+</html>
