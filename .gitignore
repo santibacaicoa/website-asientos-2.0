@@ -1,5 +1,17 @@
-node_modules
+# ENV
 .env
-backend/.env
-frontend/.env
-backend/node_modules
+.env.*
+.env.local
+
+# node
+node_modules/
+
+# logs
+logs
+*.log
+
+# OS
+.DS_Store
+
+# build
+dist/
