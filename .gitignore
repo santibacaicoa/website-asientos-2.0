@@ -1,17 +1,32 @@
-# ENV
+# env
 .env
 .env.*
-.env.local
+**/.env
+**/.env.*
+*.env
+test.env
 
 # node
 node_modules/
+**/node_modules/
 
 # logs
-logs
+logs/
 *.log
-
-# OS
-.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # build
 dist/
+build/
+**/dist/
+**/build/
+
+# system
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
