@@ -1,4 +1,4 @@
-import { apiFetch } from "../api/client.js";
+import { apiFetch } from "./api/client.js";
 
 const forgotPasswordForm = document.getElementById("forgotPasswordForm");
 const forgotMessage = document.getElementById("forgotMessage");
@@ -43,7 +43,7 @@ forgotPasswordForm?.addEventListener("submit", async (event) => {
     showMessage(result.message, "success");
 
     setTimeout(() => {
-      window.location.href = "../reset-password.html";
+      window.location.href = "./reset-password.html";
     }, 900);
   } catch (error) {
     showMessage(error.message || "No se pudo enviar el token.");

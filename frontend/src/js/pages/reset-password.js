@@ -1,4 +1,4 @@
-import { apiFetch } from "../api/client.js";
+import { apiFetch } from "./api/client.js";
 
 const resetPasswordForm = document.getElementById("resetPasswordForm");
 const resetMessage = document.getElementById("resetMessage");
@@ -57,7 +57,7 @@ resetPasswordForm?.addEventListener("submit", async (event) => {
     showMessage(result.message, "success");
 
     setTimeout(() => {
-      window.location.href = "../login-form.html";
+      window.location.href = "./login-form.html";
     }, 1000);
   } catch (error) {
     showMessage(error.message || "No se pudo cambiar la contraseña.");

@@ -1,4 +1,4 @@
-import { apiFetch } from "../api/client.js";
+import { apiFetch } from "./api/client.js";
 
 const registerStep2Form = document.getElementById("registerStep2Form");
 const resendTokenLink = document.getElementById("resendTokenLink");
@@ -9,7 +9,7 @@ const pendingRegister = pendingRegisterRaw ? JSON.parse(pendingRegisterRaw) : nu
 
 if (!pendingRegister) {
   alert("Primero completá email y contraseña.");
-  window.location.href = "../register-step-1.html";
+  window.location.href = "./register-step-1.html";
 }
 
 let tokenWasSent = false;
@@ -76,7 +76,7 @@ registerStep2Form?.addEventListener("submit", async (event) => {
 
     alert(result.message || "Cuenta verificada correctamente.");
 
-    window.location.href = "../login-form.html";
+    window.location.href = "./login-form.html";
   } catch (error) {
     alert(error.message);
   }
@@ -88,5 +88,5 @@ resendTokenLink?.addEventListener("click", async (event) => {
 });
 
 enterAfterRegisterButton?.addEventListener("click", () => {
-  window.location.href = "../login-form.html";
+  window.location.href = "./login-form.html";
 });
