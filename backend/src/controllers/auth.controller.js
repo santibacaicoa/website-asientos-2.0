@@ -90,8 +90,8 @@ export async function login(req, res) {
       message: error.message,
     });
   }
-  
 }
+
 export async function me(req, res) {
   try {
     return res.status(200).json({
@@ -102,6 +102,58 @@ export async function me(req, res) {
     return res.status(500).json({
       ok: false,
       message: "Error al obtener usuario autenticado.",
+    });
+  }
+}
+
+export async function forgotPasswordController(req, res) {
+  try {
+    const validation = validateForgotPasswordInput(req.body);
+
+    if (!validation.isValid) {
+      return res.status(400).json({
+        ok: false,
+        message: "Datos inválidos.",
+        errors: validation.errors,
+      });
+    }
+
+    const result = await forgotPassword(req.body);
+
+    return res.status(200).json({
+      ok: true,
+      ...result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+}
+
+export async function resetPasswordController(req, res) {
+  try {
+    const validation = validateResetPasswordInput(req.body);
+
+    if (!validation.isValid) {
+      return res.status(400).json({
+        ok: false,
+        message: "Datos inválidos.",
+        errors: validation.errors,
+      });
+    }
+
+    const result = await resetPassword(req.body);
+
+    return res.status(200).json({
+      ok: true,
+      ...result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      ok: false,
+      message: error.message,
     });
   }
 }
