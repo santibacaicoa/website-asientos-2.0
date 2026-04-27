@@ -20,3 +20,55 @@ router.post("/forgot-password", forgotPasswordController);
 router.post("/reset-password", resetPasswordController);
 
 export default router;
+
+export async function forgotPasswordController(req, res) {
+  try {
+    const validation = validateForgotPasswordInput(req.body);
+
+    if (!validation.isValid) {
+      return res.status(400).json({
+        ok: false,
+        message: "Datos inválidos.",
+        errors: validation.errors,
+      });
+    }
+
+    const result = await forgotPassword(req.body);
+
+    return res.status(200).json({
+      ok: true,
+      ...result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+}
+
+export async function resetPasswordController(req, res) {
+  try {
+    const validation = validateResetPasswordInput(req.body);
+
+    if (!validation.isValid) {
+      return res.status(400).json({
+        ok: false,
+        message: "Datos inválidos.",
+        errors: validation.errors,
+      });
+    }
+
+    const result = await resetPassword(req.body);
+
+    return res.status(200).json({
+      ok: true,
+      ...result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+}
