@@ -277,6 +277,26 @@ body {
   transition: transform 0.3s ease;
 }
 
+.auth-form__message {
+  min-height: 22px;
+  margin: 0;
+  font-size: 15px;
+  text-align: center;
+}
+
+.auth-form__message--error {
+  color: #ffb3b3;
+}
+
+.auth-form__message--success {
+  color: #b7ffcf;
+}
+
+.auth-button.is-loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 /* HOVER */
 .auth-panel__logo:hover img {
   transform: scale(1.08);
@@ -304,29 +324,4 @@ body {
 }
 
 @media (max-width: 480px) {
-  .auth-panel__logo {
-    width: 170px;
-    height: 170px;
-  }
-
-  .auth-form,
-  .auth-form--register-token {
-    width: 100%;
-  }
-
-  .auth-button--secondary {
-    width: 100%;
-  }
-
-  .auth-token-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .auth-field--token .auth-field__input,
-  .auth-button--token {
-    width: 100%;
-    border-radius: 10px;
-  }
 }
