@@ -2,11 +2,15 @@ import {
   registerUser,
   verifyEmailToken,
   loginUser,
+  forgotPassword,
+resetPassword,
 } from "../services/auth.service.js";
 import {
   validateRegisterInput,
   validateVerifyEmailInput,
   validateLoginInput,
+  validateForgotPasswordInput,
+validateResetPasswordInput,
 } from "../validators/auth.validator.js";
 
 export async function register(req, res) {

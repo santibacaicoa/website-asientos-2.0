@@ -31,7 +31,7 @@ body {
 .auth-layout__visual {
   position: relative;
   min-height: 100vh;
-  background-image: url("../../assets/images/ui/captura.png");
+  background-image: url("././assets/images/ui/captura.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

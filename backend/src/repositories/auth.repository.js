@@ -98,3 +98,59 @@ export async function createUser({
 
   return result.rows[0];
 }
+
+export async function deleteResetTokensByUserId(usuarioId) {
+  await db.query(
+    `DELETE FROM tokens_reset_password WHERE usuario_id = $1`,
+    [usuarioId]
+  );
+}
+
+export async function createResetPasswordToken({ usuarioId, token, expiresAt }) {
+  const query = `
+    INSERT INTO tokens_reset_password (usuario_id, token, expires_at)
+    VALUES ($1, $2, $3)
+    RETURNING id, usuario_id, token, expires_at, used_at, created_at
+  `;
+
+  const result = await db.query(query, [usuarioId, token, expiresAt]);
+  return result.rows[0];
+}
+
+export async function findResetPasswordTokenByEmailAndToken(email, token) {
+  const query = `
+    SELECT 
+      trp.id,
+      trp.usuario_id,
+      trp.token,
+      trp.expires_at,
+      trp.used_at,
+      u.email
+    FROM tokens_reset_password trp
+    INNER JOIN usuarios u ON u.id = trp.usuario_id
+    WHERE u.email = $1 AND trp.token = $2
+    LIMIT 1
+  `;
+
+  const result = await db.query(query, [email, token]);
+  return result.rows[0] || null;
+}
+
+export async function updateUserPassword(usuarioId, passwordHash) {
+  const query = `
+    UPDATE usuarios
+    SET password_hash = $1
+    WHERE id = $2
+    RETURNING id, email
+  `;
+
+  const result = await db.query(query, [passwordHash, usuarioId]);
+  return result.rows[0];
+}
+
+export async function markResetPasswordTokenUsed(tokenId) {
+  await db.query(
+    `UPDATE tokens_reset_password SET used_at = NOW() WHERE id = $1`,
+    [tokenId]
+  );
+}

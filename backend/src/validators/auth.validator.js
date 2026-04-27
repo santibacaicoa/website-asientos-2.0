@@ -60,3 +60,41 @@ export function validateLoginInput(data) {
     errors,
   };
 }
+
+export function validateForgotPasswordInput(data) {
+  const errors = [];
+
+  if (!data.email || typeof data.email !== "string") {
+    errors.push("El email es obligatorio.");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+export function validateResetPasswordInput(data) {
+  const errors = [];
+
+  if (!data.email || typeof data.email !== "string") {
+    errors.push("El email es obligatorio.");
+  }
+
+  if (!data.token || typeof data.token !== "string") {
+    errors.push("El token es obligatorio.");
+  }
+
+  if (!data.password || typeof data.password !== "string") {
+    errors.push("La nueva contraseña es obligatoria.");
+  }
+
+  if (data.password && data.password.length < 6) {
+    errors.push("La contraseña debe tener al menos 6 caracteres.");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}

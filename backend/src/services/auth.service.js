@@ -4,6 +4,11 @@ import {
   deleteVerificationTokensByEmail,
   createVerificationToken,
   createUser,
+  deleteResetTokensByUserId,
+createResetPasswordToken,
+findResetPasswordTokenByEmailAndToken,
+updateUserPassword,
+markResetPasswordTokenUsed,
 } from "../repositories/auth.repository.js";
 import { hashPassword, comparePassword } from "../utils/password.js";
 import { generateRandomToken } from "../utils/token.js";
@@ -132,5 +137,74 @@ export async function loginUser({ email, password }) {
       rol: user.rol,
       supervisor_id: user.supervisor_id,
     },
+  };
+}
+
+export async function forgotPassword({ email }) {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const user = await findUserByEmail(normalizedEmail);
+
+  if (!user) {
+    return {
+      message: "Si el email existe, te enviaremos un token para restablecer la contraseña.",
+    };
+  }
+
+  await deleteResetTokensByUserId(user.id);
+
+  const token = generateRandomToken(16);
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 15);
+
+  await createResetPasswordToken({
+    usuarioId: user.id,
+    token,
+    expiresAt,
+  });
+
+  await mailTransporter.sendMail({
+    from: env.emailUser,
+    to: normalizedEmail,
+    subject: "Restablecer contraseña - Website Asientos",
+    text: `
+Tu token para restablecer la contraseña es: ${token}
+
+Este token vence en 15 minutos.
+    `.trim(),
+  });
+
+  return {
+    message: "Si el email existe, te enviaremos un token para restablecer la contraseña.",
+  };
+}
+
+export async function resetPassword({ email, token, password }) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedToken = token.trim();
+
+  const resetRecord = await findResetPasswordTokenByEmailAndToken(
+    normalizedEmail,
+    normalizedToken
+  );
+
+  if (!resetRecord) {
+    throw new Error("Token inválido o email incorrecto.");
+  }
+
+  if (resetRecord.used_at) {
+    throw new Error("Este token ya fue utilizado.");
+  }
+
+  if (new Date(resetRecord.expires_at) < new Date()) {
+    throw new Error("El token expiró.");
+  }
+
+  const passwordHash = await hashPassword(password);
+
+  await updateUserPassword(resetRecord.usuario_id, passwordHash);
+  await markResetPasswordTokenUsed(resetRecord.id);
+
+  return {
+    message: "Contraseña actualizada correctamente.",
   };
 }
