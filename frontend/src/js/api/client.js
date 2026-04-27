@@ -9,10 +9,14 @@ export async function apiFetch(endpoint, options = {}) {
     },
   });
 
-  const contentType = response.headers.get("content-type") || "";
-  const data = contentType.includes("application/json")
-    ? await response.json()
-    : await response.text();
+  const text = await response.text();
+
+  let data;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = text;
+  }
 
   if (!response.ok) {
     throw new Error(
