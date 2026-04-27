@@ -30,5 +30,5 @@ registerStep1Form?.addEventListener("submit", (event) => {
     })
   );
 
-  window.location.href = "./register-step-2.html";
+  window.location.href = ".s./register-step-2.html";
 });

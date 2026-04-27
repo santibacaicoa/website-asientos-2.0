@@ -45,7 +45,7 @@ loginForm?.addEventListener("submit", async (event) => {
     showMessage("Login exitoso. Redirigiendo...", "success");
 
     setTimeout(() => {
-      window.location.href = "./hub.html";
+      window.location.href = "../hub.html";
     }, 700);
   } catch (error) {
     showMessage(error.message || "No se pudo iniciar sesión.");
