@@ -1,6 +1,8 @@
+import { apiFetch } from "../api/client.js";
+
 const registerStep1Form = document.getElementById("registerStep1Form");
 
-registerStep1Form?.addEventListener("submit", (event) => {
+registerStep1Form?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const email = document.getElementById("registerEmail")?.value.trim();
@@ -22,13 +24,26 @@ registerStep1Form?.addEventListener("submit", (event) => {
     return;
   }
 
-  sessionStorage.setItem(
-    "pendingRegister",
-    JSON.stringify({
-      email,
-      password,
-    })
-  );
+  try {
+    await apiFetch("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
 
-  window.location.href = "./register-step-2.html";
+    sessionStorage.setItem(
+      "pendingRegister",
+      JSON.stringify({
+        email,
+      })
+    );
+
+    alert("Te enviamos un código de 4 dígitos al mail.");
+
+    window.location.href = "./register-step-2.html";
+  } catch (error) {
+    alert(error.message);
+  }
 });

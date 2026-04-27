@@ -1,6 +1,6 @@
-import { apiFetch } from "./api/client.js";
+import { apiFetch } from "../api/client.js";
 
-const registerStep2Form = document.getElementById("registerStep2Form");
+const form = document.getElementById("registerStep2Form");
 const resendTokenLink = document.getElementById("resendTokenLink");
 const enterAfterRegisterButton = document.getElementById("enterAfterRegister");
 
@@ -12,54 +12,44 @@ if (!pendingRegister) {
   window.location.href = "./register-step-1.html";
 }
 
-let tokenWasSent = false;
+function showTokenMessage(message, ok = false) {
+  let messageEl = document.getElementById("tokenMessage");
 
-async function sendRegisterToken() {
-  const nombre = document.getElementById("registerNombre")?.value.trim();
-  const apellido = document.getElementById("registerApellido")?.value.trim();
+  if (!messageEl && form) {
+    messageEl = document.createElement("p");
+    messageEl.id = "tokenMessage";
+    messageEl.className = "auth-form__message";
 
-  if (!nombre || !apellido) {
-    alert("Completá nombre y apellido antes de pedir el token.");
-    return;
+    const actions = form.querySelector(".auth-form__actions");
+    if (actions) {
+      form.insertBefore(messageEl, actions);
+    } else {
+      form.appendChild(messageEl);
+    }
   }
 
-  try {
-    await apiFetch("/auth/register", {
-      method: "POST",
-      body: JSON.stringify({
-        email: pendingRegister.email,
-        password: pendingRegister.password,
-        nombre,
-        apellido,
-      }),
-    });
+  if (!messageEl) return;
 
-    tokenWasSent = true;
-    alert("Token enviado al mail.");
-  } catch (error) {
-    alert(error.message);
-  }
+  messageEl.textContent = message;
+  messageEl.className = `auth-form__message ${
+    ok ? "auth-form__message--success" : "auth-form__message--error"
+  }`;
 }
 
-registerStep2Form?.addEventListener("submit", async (event) => {
+form?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const nombre = document.getElementById("registerNombre")?.value.trim();
   const apellido = document.getElementById("registerApellido")?.value.trim();
   const token = document.getElementById("registerToken")?.value.trim();
 
-  if (!nombre || !apellido) {
-    alert("Completá nombre y apellido.");
+  if (!nombre || !apellido || !token) {
+    showTokenMessage("Completá nombre, apellido y token.");
     return;
   }
 
-  if (!tokenWasSent) {
-    await sendRegisterToken();
-    return;
-  }
-
-  if (!token) {
-    alert("Ingresá el token.");
+  if (!/^\d{4}$/.test(token)) {
+    showTokenMessage("El token debe tener 4 dígitos.");
     return;
   }
 
@@ -68,23 +58,42 @@ registerStep2Form?.addEventListener("submit", async (event) => {
       method: "POST",
       body: JSON.stringify({
         email: pendingRegister.email,
+        nombre,
+        apellido,
         token,
       }),
     });
 
     sessionStorage.removeItem("pendingRegister");
 
-    alert(result.message || "Cuenta verificada correctamente.");
+    showTokenMessage(result.message || "Token válido.", true);
 
-    window.location.href = "./login-form.html";
+    setTimeout(() => {
+      window.location.href = "./login-form.html";
+    }, 1200);
   } catch (error) {
-    alert(error.message);
+    showTokenMessage(error.message || "Token no válido.");
   }
 });
 
 resendTokenLink?.addEventListener("click", async (event) => {
   event.preventDefault();
-  await sendRegisterToken();
+
+  try {
+    await apiFetch("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({
+        email: pendingRegister.email,
+        password: "NO_PASSWORD_RESEND",
+      }),
+    });
+
+    showTokenMessage("Token reenviado al mail.", true);
+  } catch (error) {
+    showTokenMessage(
+      "Para reenviar el token, volvé al paso anterior y tocá Siguiente nuevamente."
+    );
+  }
 });
 
 enterAfterRegisterButton?.addEventListener("click", () => {

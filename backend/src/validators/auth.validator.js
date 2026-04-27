@@ -9,14 +9,6 @@ export function validateRegisterInput(data) {
     errors.push("La contraseña es obligatoria.");
   }
 
-  if (!data.nombre || typeof data.nombre !== "string") {
-    errors.push("El nombre es obligatorio.");
-  }
-
-  if (!data.apellido || typeof data.apellido !== "string") {
-    errors.push("El apellido es obligatorio.");
-  }
-
   if (data.password && data.password.length < 6) {
     errors.push("La contraseña debe tener al menos 6 caracteres.");
   }
@@ -36,6 +28,14 @@ export function validateVerifyEmailInput(data) {
 
   if (!data.token || typeof data.token !== "string") {
     errors.push("El token es obligatorio.");
+  }
+
+  if (!data.nombre || typeof data.nombre !== "string") {
+    errors.push("El nombre es obligatorio.");
+  }
+
+  if (!data.apellido || typeof data.apellido !== "string") {
+    errors.push("El apellido es obligatorio.");
   }
 
   return {

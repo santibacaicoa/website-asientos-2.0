@@ -5,21 +5,20 @@ import {
   createVerificationToken,
   createUser,
   deleteResetTokensByUserId,
-createResetPasswordToken,
-findResetPasswordTokenByEmailAndToken,
-updateUserPassword,
-markResetPasswordTokenUsed,
+  createResetPasswordToken,
+  findResetPasswordTokenByEmailAndToken,
+  updateUserPassword,
+  markResetPasswordTokenUsed,
 } from "../repositories/auth.repository.js";
+
 import { hashPassword, comparePassword } from "../utils/password.js";
 import { generateRandomToken } from "../utils/token.js";
 import { signAccessToken } from "../utils/jwt.js";
 import { mailTransporter } from "../config/mail.js";
 import { env } from "../config/env.js";
 
-export async function registerUser({ email, password, nombre, apellido }) {
+export async function registerUser({ email, password }) {
   const normalizedEmail = email.trim().toLowerCase();
-  const normalizedNombre = nombre.trim();
-  const normalizedApellido = apellido.trim();
 
   const existingUser = await findUserByEmail(normalizedEmail);
 
@@ -30,37 +29,31 @@ export async function registerUser({ email, password, nombre, apellido }) {
   await deleteVerificationTokensByEmail(normalizedEmail);
 
   const passwordHash = await hashPassword(password);
-  const token = generateRandomToken(16);
+  const token = Math.floor(1000 + Math.random() * 9000).toString();
   const expiresAt = new Date(Date.now() + 1000 * 60 * 15);
 
   await createVerificationToken({
     email: normalizedEmail,
     token,
-    nombre: normalizedNombre,
-    apellido: normalizedApellido,
+    nombre: null,
+    apellido: null,
     passwordHash,
     expiresAt,
   });
 
-  const verifyText = `
-Tu token de verificación es: ${token}
-
-Este token vence en 15 minutos.
-  `.trim();
-
   await mailTransporter.sendMail({
     from: env.emailUser,
     to: normalizedEmail,
-    subject: "Verificación de cuenta - Website Asientos",
-    text: verifyText,
+    subject: "Código de verificación - Website Asientos",
+    text: `Tu código de verificación es: ${token}\n\nEste código vence en 15 minutos.`,
   });
 
   return {
-    message: "Te enviamos un token de verificación por email.",
+    message: "Te enviamos un código de verificación por email.",
   };
 }
 
-export async function verifyEmailToken({ email, token }) {
+export async function verifyEmailToken({ email, token, nombre, apellido }) {
   const normalizedEmail = email.trim().toLowerCase();
   const normalizedToken = token.trim();
 
@@ -76,27 +69,24 @@ export async function verifyEmailToken({ email, token }) {
   );
 
   if (!verificationRecord) {
-    throw new Error("Token inválido o email incorrecto.");
+    throw new Error("Token no válido.");
   }
 
-  const now = new Date();
-  const expiresAt = new Date(verificationRecord.expires_at);
-
-  if (expiresAt < now) {
+  if (new Date(verificationRecord.expires_at) < new Date()) {
     throw new Error("El token expiró.");
   }
 
   const createdUser = await createUser({
     email: verificationRecord.email,
     passwordHash: verificationRecord.password_hash,
-    nombre: verificationRecord.nombre,
-    apellido: verificationRecord.apellido,
+    nombre: nombre.trim(),
+    apellido: apellido.trim(),
   });
 
   await deleteVerificationTokensByEmail(normalizedEmail);
 
   return {
-    message: "Cuenta verificada correctamente.",
+    message: "Token válido. Cuenta creada correctamente.",
     user: createdUser,
   };
 }
@@ -147,7 +137,8 @@ export async function forgotPassword({ email }) {
 
   if (!user) {
     return {
-      message: "Si el email existe, te enviaremos un token para restablecer la contraseña.",
+      message:
+        "Si el email existe, te enviaremos un token para restablecer la contraseña.",
     };
   }
 
@@ -174,7 +165,8 @@ Este token vence en 15 minutos.
   });
 
   return {
-    message: "Si el email existe, te enviaremos un token para restablecer la contraseña.",
+    message:
+      "Si el email existe, te enviaremos un token para restablecer la contraseña.",
   };
 }
 
