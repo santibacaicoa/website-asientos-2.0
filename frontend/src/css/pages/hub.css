@@ -745,3 +745,30 @@ body {
     transform: translateY(0);
   }
 }
+
+/* =========================================================
+   FIX MOBILE: mover la casita un poco a la derecha
+========================================================= */
+
+@media (max-width: 899px) {
+  .hub-bottom-nav__item:first-child {
+    transform: translateX(12px);
+  }
+}
+
+/* =========================================================
+   FIX DESKTOP: menú perfil más hacia la derecha
+========================================================= */
+
+@media (min-width: 900px) {
+  .hub-sidebar .hub-profile-dropdown {
+    left: 95px;
+    right: auto;
+    top: 90px;
+    transform: translateY(-8px);
+  }
+
+  .hub-sidebar .hub-profile-dropdown.is-open {
+    transform: translateY(0);
+  }
+}
