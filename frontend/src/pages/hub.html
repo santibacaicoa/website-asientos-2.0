@@ -16,9 +16,21 @@
            - En mobile se oculta y se usa bottom nav.
       ====================================================== -->
       <aside class="hub-sidebar">
-        <button class="hub-sidebar__avatar" type="button" aria-label="Perfil">
-          <img src="./assets/images/ui/avatar-default.png" alt="Usuario" />
-        </button>
+        <div class="hub-profile-menu">
+          <button
+            class="hub-sidebar__avatar"
+            id="profileMenuButtonDesktop"
+            type="button"
+            aria-label="Perfil"
+          >
+            <img src="./assets/images/ui/avatar-default.png" alt="Usuario" />
+          </button>
+
+          <div class="hub-profile-dropdown" id="profileDropdownDesktop">
+            <a href="./reset-password.html">Cambiar contraseña</a>
+            <button type="button" class="logoutAction">Cerrar sesión</button>
+          </div>
+        </div>
 
         <nav class="hub-sidebar__nav" aria-label="Navegación principal">
           <a class="hub-sidebar__link is-active" href="./hub.html">
@@ -87,9 +99,24 @@
             </h1>
           </div>
 
-          <button class="hub-profile-button" type="button" aria-label="Perfil">
-            <img src="./assets/images/ui/avatar-default.png" alt="Usuario" />
-          </button>
+          <div class="hub-profile-menu">
+            <button
+              class="hub-profile-button"
+              id="profileMenuButtonMobile"
+              type="button"
+              aria-label="Perfil"
+            >
+              <img src="./assets/images/ui/avatar-default.png" alt="Usuario" />
+            </button>
+
+            <div
+              class="hub-profile-dropdown hub-profile-dropdown--mobile"
+              id="profileDropdownMobile"
+            >
+              <a href="./reset-password.html">Cambiar contraseña</a>
+              <button type="button" class="logoutAction">Cerrar sesión</button>
+            </div>
+          </div>
         </section>
 
         <!-- =====================================================
@@ -194,11 +221,16 @@
 
         <button
           class="hub-bottom-nav__item"
-          id="logoutButton"
+          id="profileMenuButtonBottom"
           type="button"
-          aria-label="Cerrar sesión"
+          aria-label="Perfil"
         >
-          ⦿
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.2 0-7 2.2-7 5v1h14v-1c0-2.8-2.8-5-7-5Z"
+              fill="currentColor"
+            />
+          </svg>
         </button>
       </nav>
     </main>

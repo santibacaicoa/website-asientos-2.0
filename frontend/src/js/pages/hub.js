@@ -108,17 +108,60 @@ if (occupiedToday) occupiedToday.textContent = "0";
 if (availableToday) availableToday.textContent = "0";
 
 /* =========================================================
-   6. LOGOUT
+   6. MENÚ DE PERFIL Y LOGOUT
    Función:
-   - Borra token y usuario del navegador.
-   - Vuelve al login.
+   - Abre/cierra el menú desplegable de perfil.
+   - Permite cerrar sesión desde cualquier botón con clase logoutAction.
 ========================================================= */
 
-const logoutButton = document.getElementById("logoutButton");
+const profileMenuButtonDesktop = document.getElementById("profileMenuButtonDesktop");
+const profileMenuButtonMobile = document.getElementById("profileMenuButtonMobile");
+const profileMenuButtonBottom = document.getElementById("profileMenuButtonBottom");
 
-logoutButton?.addEventListener("click", () => {
-  localStorage.removeItem("authToken");
-  localStorage.removeItem("authUser");
+const profileDropdownDesktop = document.getElementById("profileDropdownDesktop");
+const profileDropdownMobile = document.getElementById("profileDropdownMobile");
 
-  window.location.href = "./login-form.html";
+function closeProfileMenus() {
+  profileDropdownDesktop?.classList.remove("is-open");
+  profileDropdownMobile?.classList.remove("is-open");
+}
+
+function toggleDropdown(dropdown) {
+  if (!dropdown) return;
+
+  const isOpen = dropdown.classList.contains("is-open");
+
+  closeProfileMenus();
+
+  if (!isOpen) {
+    dropdown.classList.add("is-open");
+  }
+}
+
+profileMenuButtonDesktop?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleDropdown(profileDropdownDesktop);
+});
+
+profileMenuButtonMobile?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleDropdown(profileDropdownMobile);
+});
+
+profileMenuButtonBottom?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleDropdown(profileDropdownMobile);
+});
+
+document.addEventListener("click", () => {
+  closeProfileMenus();
+});
+
+document.querySelectorAll(".logoutAction").forEach((button) => {
+  button.addEventListener("click", () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authUser");
+
+    window.location.href = "./login-form.html";
+  });
 });

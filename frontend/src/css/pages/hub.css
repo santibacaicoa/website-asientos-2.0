@@ -541,3 +541,204 @@ body {
 .hub-bottom-nav__item.is-active {
   color: #111;
 }
+
+/* =========================================================
+   AJUSTE BOTTOM NAV MOBILE
+   Función:
+   - Corrige el grid para que los iconos queden centrados.
+   - Evita que la casa quede demasiado a la izquierda.
+========================================================= */
+
+.hub-bottom-nav {
+  grid-template-columns: 1fr 1fr 82px 1fr 1fr;
+}
+
+.hub-bottom-nav__item,
+.hub-bottom-nav__logo {
+  width: 100%;
+  justify-self: center;
+}
+
+.hub-bottom-nav__item svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* =========================================================
+   HOVERS EN ICONOS DE NAVEGACIÓN
+   Función:
+   - Al pasar el mouse, los iconos reciben fondo gris.
+   - Similar al estado activo del hub.
+========================================================= */
+
+.hub-sidebar__link,
+.hub-bottom-nav__item {
+  transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.hub-sidebar__link:hover,
+.hub-bottom-nav__item:hover {
+  background: #d6d6d6;
+  color: #111111;
+  transform: translateY(-1px);
+}
+
+.hub-bottom-nav__item:hover {
+  border-radius: 12px;
+}
+
+/* =========================================================
+   HOVER LOGO ASSURANT
+   Función:
+   - El logo de Assurant crece suavemente al hacer hover.
+========================================================= */
+
+.hub-sidebar__logo img,
+.hub-bottom-nav__logo img,
+.hub-mobile-header__logo img {
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.hub-sidebar__logo:hover img,
+.hub-bottom-nav__logo:hover img,
+.hub-mobile-header__logo:hover img {
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+/* =========================================================
+   HOVER FOTO DE PERFIL
+   Función:
+   - La foto/avatar crece un poco al pasar el mouse.
+========================================================= */
+
+.hub-sidebar__avatar,
+.hub-profile-button {
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.hub-sidebar__avatar:hover,
+.hub-profile-button:hover {
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+/* =========================================================
+   MENÚ DESPLEGABLE DE PERFIL
+   Función:
+   - Menú para cambiar contraseña o cerrar sesión.
+   - Se abre desde avatar en desktop/mobile.
+========================================================= */
+
+.hub-profile-menu {
+  position: relative;
+}
+
+.hub-profile-dropdown {
+  position: absolute;
+  top: 88px;
+  left: 50%;
+  min-width: 190px;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 10px;
+  border: 1px solid #d0d0d0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.hub-profile-dropdown.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.hub-profile-dropdown a,
+.hub-profile-dropdown button {
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 12px;
+  background: transparent;
+  color: #111111;
+  font-size: 15px;
+  text-align: left;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.hub-profile-dropdown a:hover,
+.hub-profile-dropdown button:hover {
+  background: #eeeeee;
+}
+
+.hub-profile-dropdown--mobile {
+  top: 62px;
+  right: 0;
+  left: auto;
+  transform: translateY(-8px);
+}
+
+.hub-profile-dropdown--mobile.is-open {
+  transform: translateY(0);
+}
+
+/* =========================================================
+   HOVER BOTÓN SUPERVISOR
+   Función:
+   - Cambia color del botón Seleccionar supervisor.
+========================================================= */
+
+.hub-supervisor-card__button {
+  transition: background-color 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+}
+
+.hub-supervisor-card__button:hover {
+  background: #004f78;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   HOVER BOTÓN RESERVAR
+   Función:
+   - Hace que el botón Reservar se sienta clickeable.
+========================================================= */
+
+.hub-reserve-button {
+  transition: background-color 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+}
+
+.hub-reserve-button:hover {
+  background: #ffad25;
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+}
+
+/* =========================================================
+   MOBILE: MENÚ DE PERFIL DESDE BOTTOM NAV
+   Función:
+   - En mobile, el dropdown puede abrirse desde el botón inferior.
+========================================================= */
+
+@media (max-width: 899px) {
+  .hub-profile-dropdown {
+    position: fixed;
+    top: auto;
+    left: 18px;
+    right: 18px;
+    bottom: 86px;
+    min-width: auto;
+    transform: translateY(10px);
+  }
+
+  .hub-profile-dropdown.is-open {
+    transform: translateY(0);
+  }
+}
