@@ -42,12 +42,13 @@ export async function registerUser({ email, password }) {
   });
 
 try {
-  await mailTransporter.sendMail({
-    from: env.emailUser,
-    to: normalizedEmail,
-    subject: "Código de verificación - Website Asientos",
-    text: `Tu código de verificación es: ${token}\n\nEste código vence en 15 minutos.`,
-  });
+  //await mailTransporter.sendMail({
+    //from: env.emailUser,
+    //to: normalizedEmail,
+    //subject: "Código de verificación - Website Asientos",
+  //  text: `Tu código de verificación es: ${token}\n\nEste código vence en 15 minutos.`,
+//  });
+console.log("TOKEN GENERADO:", token);
 } catch (error) {
   console.error("Error enviando mail de registro:", error);
 
