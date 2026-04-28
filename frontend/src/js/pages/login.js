@@ -40,6 +40,15 @@ loginForm?.addEventListener("submit", async (event) => {
     });
 
     localStorage.setItem("authToken", result.token);
+localStorage.setItem("authUser", JSON.stringify(result.user));
+
+showMessage("Login exitoso. Redirigiendo...", "success");
+
+setTimeout(() => {
+  window.location.href = "./hub.html";
+}, 700);
+
+    localStorage.setItem("authToken", result.token);
     localStorage.setItem("authUser", JSON.stringify(result.user));
 
     showMessage("Login exitoso. Redirigiendo...", "success");
