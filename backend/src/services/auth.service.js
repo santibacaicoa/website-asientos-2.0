@@ -144,7 +144,7 @@ export async function forgotPassword({ email }) {
 
   await deleteResetTokensByUserId(user.id);
 
-  const token = generateRandomToken(16);
+  const token = Math.floor(1000 + Math.random() * 9000).toString();
   const expiresAt = new Date(Date.now() + 1000 * 60 * 15);
 
   await createResetPasswordToken({

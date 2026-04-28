@@ -39,6 +39,11 @@ resetPasswordForm?.addEventListener("submit", async (event) => {
     return;
   }
 
+  if (!/^\d{4}$/.test(token)) {
+  showMessage("El token debe tener 4 dígitos.");
+  return;
+}
+
   if (password.length < 6) {
     showMessage("La contraseña debe tener al menos 6 caracteres.");
     return;
