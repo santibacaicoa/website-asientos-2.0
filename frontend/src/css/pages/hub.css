@@ -556,7 +556,9 @@ body {
 .hub-bottom-nav__item,
 .hub-bottom-nav__logo {
   width: 100%;
-  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 🔥 CENTRA REAL */
 }
 
 .hub-bottom-nav__item svg {
@@ -637,9 +639,10 @@ body {
 .hub-profile-dropdown {
   position: absolute;
   top: 88px;
-  left: 50%;
+  right: 0; /* 🔥 clave */
+  left: auto;
   min-width: 190px;
-  transform: translateX(-50%) translateY(-8px);
+  transform: translateY(-8px);
   padding: 10px;
   border: 1px solid #d0d0d0;
   border-radius: 16px;
@@ -654,7 +657,7 @@ body {
 .hub-profile-dropdown.is-open {
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
 .hub-profile-dropdown a,
