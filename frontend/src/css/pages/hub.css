@@ -752,7 +752,7 @@ body {
 
 @media (max-width: 899px) {
   .hub-bottom-nav__item:first-child {
-    transform: translateX(12px);
+    transform: translateX(50px);
   }
 }
 
