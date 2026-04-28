@@ -42,15 +42,19 @@ export async function registerUser({ email, password }) {
   });
 
 try {
-  //await mailTransporter.sendMail({
-    //from: env.emailUser,
-    //to: normalizedEmail,
-    //subject: "Código de verificación - Website Asientos",
-  //  text: `Tu código de verificación es: ${token}\n\nEste código vence en 15 minutos.`,
-//  });
-console.log("TOKEN GENERADO:", token);
+  await Promise.race([
+    mailTransporter.sendMail({
+      from: env.emailUser,
+      to: normalizedEmail,
+      subject: "Código de verificación - Website Asientos",
+      text: `Tu código de verificación es: ${token}\n\nEste código vence en 15 minutos.`,
+    }),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Timeout mail")), 5000)
+    ),
+  ]);
 } catch (error) {
-  console.error("Error enviando mail de registro:", error);
+  console.error("Error enviando mail:", error);
 
   throw new Error(
     "No se pudo enviar el email de verificación. Revisá EMAIL_USER y EMAIL_PASS en Render."
