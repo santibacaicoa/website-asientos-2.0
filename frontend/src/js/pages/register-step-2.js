@@ -3,41 +3,34 @@ import { apiFetch } from "../api/client.js";
 const form = document.getElementById("registerStep2Form");
 const resendTokenLink = document.getElementById("resendTokenLink");
 const enterAfterRegisterButton = document.getElementById("enterAfterRegister");
+const tokenMessage = document.getElementById("tokenMessage");
 
 const pendingRegisterRaw = sessionStorage.getItem("pendingRegister");
 const pendingRegister = pendingRegisterRaw ? JSON.parse(pendingRegisterRaw) : null;
 
 if (!pendingRegister) {
-  alert("Primero completá email y contraseña.");
   window.location.href = "./register-step-1.html";
 }
 
-function showTokenMessage(message, ok = false) {
-  let messageEl = document.getElementById("tokenMessage");
+function showTokenMessage(message, type = "error") {
+  if (!tokenMessage) return;
 
-  if (!messageEl && form) {
-    messageEl = document.createElement("p");
-    messageEl.id = "tokenMessage";
-    messageEl.className = "auth-form__message";
+  tokenMessage.textContent = message;
+  tokenMessage.className = `auth-form__message auth-form__message--${type}`;
+}
 
-    const actions = form.querySelector(".auth-form__actions");
-    if (actions) {
-      form.insertBefore(messageEl, actions);
-    } else {
-      form.appendChild(messageEl);
-    }
-  }
+function setLoading(button, isLoading) {
+  if (!button) return;
 
-  if (!messageEl) return;
-
-  messageEl.textContent = message;
-  messageEl.className = `auth-form__message ${
-    ok ? "auth-form__message--success" : "auth-form__message--error"
-  }`;
+  button.disabled = isLoading;
+  button.classList.toggle("is-loading", isLoading);
+  button.textContent = isLoading ? "Validando..." : "Confirmar";
 }
 
 form?.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  const submitButton = form.querySelector("button[type='submit']");
 
   const nombre = document.getElementById("registerNombre")?.value.trim();
   const apellido = document.getElementById("registerApellido")?.value.trim();
@@ -54,6 +47,9 @@ form?.addEventListener("submit", async (event) => {
   }
 
   try {
+    setLoading(submitButton, true);
+    showTokenMessage("");
+
     const result = await apiFetch("/auth/verify-email", {
       method: "POST",
       body: JSON.stringify({
@@ -66,34 +62,24 @@ form?.addEventListener("submit", async (event) => {
 
     sessionStorage.removeItem("pendingRegister");
 
-    showTokenMessage(result.message || "Token válido.", true);
+    showTokenMessage(result.message || "Token válido. Cuenta creada correctamente.", "success");
 
     setTimeout(() => {
       window.location.href = "./login-form.html";
     }, 1200);
   } catch (error) {
     showTokenMessage(error.message || "Token no válido.");
+  } finally {
+    setLoading(submitButton, false);
   }
 });
 
-resendTokenLink?.addEventListener("click", async (event) => {
+resendTokenLink?.addEventListener("click", (event) => {
   event.preventDefault();
 
-  try {
-    await apiFetch("/auth/register", {
-      method: "POST",
-      body: JSON.stringify({
-        email: pendingRegister.email,
-        password: "NO_PASSWORD_RESEND",
-      }),
-    });
-
-    showTokenMessage("Token reenviado al mail.", true);
-  } catch (error) {
-    showTokenMessage(
-      "Para reenviar el token, volvé al paso anterior y tocá Siguiente nuevamente."
-    );
-  }
+  showTokenMessage(
+    "Para reenviar el token, volvé al paso anterior y tocá Siguiente nuevamente."
+  );
 });
 
 enterAfterRegisterButton?.addEventListener("click", () => {
