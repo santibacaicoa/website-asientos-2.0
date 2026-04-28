@@ -1,15 +1,194 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Hub - Website Asientos</title>
+    <link rel="stylesheet" href="./css/pages/hub.css" />
   </head>
-  <body>
-    <h1>Bienvenido</h1>
-    <p id="userName"></p>
 
-    <button id="logoutButton">Cerrar sesión</button>
+  <body>
+    <main class="hub-page">
+      <!-- =====================================================
+           SIDEBAR DESKTOP
+           Función:
+           - Navegación lateral para desktop.
+           - En mobile se oculta y se usa bottom nav.
+      ====================================================== -->
+      <aside class="hub-sidebar">
+        <button class="hub-sidebar__avatar" type="button" aria-label="Perfil">
+          <img src="./assets/images/ui/avatar-default.png" alt="Usuario" />
+        </button>
+
+        <nav class="hub-sidebar__nav" aria-label="Navegación principal">
+          <a
+            class="hub-sidebar__link is-active"
+            href="./hub.html"
+            aria-label="Hub"
+          >
+            ▦
+          </a>
+
+          <a
+            class="hub-sidebar__link"
+            href="./mapa.html"
+            aria-label="Mapa de oficina"
+          >
+            ♢
+          </a>
+
+          <a class="hub-sidebar__link" href="./chat.html" aria-label="Chat">
+            ☰
+          </a>
+        </nav>
+
+        <a class="hub-sidebar__logo" href="./hub.html" aria-label="Inicio">
+          <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
+        </a>
+      </aside>
+
+      <!-- =====================================================
+           CONTENIDO PRINCIPAL
+           Función:
+           - Contiene todo lo visible del hub.
+      ====================================================== -->
+      <section class="hub-content">
+        <!-- =====================================================
+             TOPBAR MOBILE
+             Función:
+             - Logo, fecha/hora y avatar para mobile.
+        ====================================================== -->
+        <header class="hub-mobile-header">
+          <a class="hub-mobile-header__logo" href="./hub.html">
+            <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
+          </a>
+
+          <div class="hub-mobile-header__datetime" id="currentDateTimeMobile">
+            --
+          </div>
+        </header>
+
+        <!-- =====================================================
+             HEADER DESKTOP / SALUDO
+             Función:
+             - Muestra fecha y saludo.
+             - El nombre viene desde localStorage.
+        ====================================================== -->
+        <section class="hub-hero-header">
+          <div>
+            <p class="hub-date" id="currentDateTimeDesktop">--</p>
+            <h1 class="hub-title">
+              Hola, <span id="userFirstName">Usuario</span>!
+            </h1>
+          </div>
+
+          <button class="hub-profile-button" type="button" aria-label="Perfil">
+            <img src="./assets/images/ui/avatar-default.png" alt="Usuario" />
+          </button>
+        </section>
+
+        <!-- =====================================================
+             CARD PRINCIPAL
+             Función:
+             - Imagen principal de Assurant.
+             - Botón Reservar preparado para futuro mapa/reservas.
+        ====================================================== -->
+        <section class="hub-main-card">
+          <img
+            class="hub-main-card__image"
+            src="./assets/images/ui/assurant-building.png"
+            alt="Edificio Assurant"
+          />
+
+          <div class="hub-main-card__overlay">
+            <a class="hub-reserve-button" href="./mapa.html">
+              <span>Reservar</span>
+              <span aria-hidden="true">→</span>
+            </a>
+
+            <p class="hub-main-card__phrase">
+              Common sense, common integrity, uncommon thinking, uncommon
+              results
+            </p>
+          </div>
+        </section>
+
+        <!-- =====================================================
+             SUPERVISOR
+             Función:
+             - Muestra supervisor asignado.
+             - Por ahora es placeholder hasta crear módulo supervisor.
+        ====================================================== -->
+        <section class="hub-supervisor-card">
+          <p class="hub-supervisor-card__label">Tu supervisor/a</p>
+
+          <button class="hub-supervisor-card__button" type="button">
+            <span id="supervisorName">Seleccionar</span>
+            <img src="./assets/images/ui/avatar-default.png" alt="" />
+          </button>
+        </section>
+
+        <!-- =====================================================
+             MÉTRICAS PLACEHOLDER
+             Función:
+             - Por ahora quedan en 0 porque dependen de reservas.
+        ====================================================== -->
+        <section class="hub-stats">
+          <article class="hub-stat-card">
+            <p>Total asientos</p>
+            <strong id="totalSeats">0</strong>
+          </article>
+
+          <article class="hub-stat-card">
+            <p>Ocupados hoy</p>
+            <strong id="occupiedToday">0</strong>
+          </article>
+
+          <article class="hub-stat-card">
+            <p>Disponibles hoy</p>
+            <strong id="availableToday">0</strong>
+          </article>
+        </section>
+      </section>
+
+      <!-- =====================================================
+           BOTTOM NAV MOBILE
+           Función:
+           - Navegación inferior tipo app.
+           - Solo aparece en mobile.
+      ====================================================== -->
+      <nav class="hub-bottom-nav" aria-label="Navegación mobile">
+        <a
+          class="hub-bottom-nav__item is-active"
+          href="./hub.html"
+          aria-label="Hub"
+        >
+          ▦
+        </a>
+
+        <a class="hub-bottom-nav__item" href="./mapa.html" aria-label="Mapa">
+          ♢
+        </a>
+
+        <a class="hub-bottom-nav__logo" href="./hub.html" aria-label="Inicio">
+          <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
+        </a>
+
+        <a class="hub-bottom-nav__item" href="./chat.html" aria-label="Chat">
+          ☰
+        </a>
+
+        <button
+          class="hub-bottom-nav__item"
+          id="logoutButton"
+          type="button"
+          aria-label="Cerrar sesión"
+        >
+          ⦿
+        </button>
+      </nav>
+    </main>
+
+    <script type="module" src="./js/pages/hub.js"></script>
   </body>
-  <script type="module" src="./js/pages/hub.js"></script>
 </html>
