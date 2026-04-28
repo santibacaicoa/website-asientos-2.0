@@ -1,8 +1,8 @@
 /* =========================================================
    1. RESET GENERAL
    Función:
-   - Limpia márgenes.
-   - Hace que el layout sea más predecible.
+   - Limpia márgenes por defecto.
+   - Hace que los tamaños sean más predecibles.
 ========================================================= */
 
 * {
@@ -23,10 +23,10 @@ body {
 }
 
 /* =========================================================
-   2. CONTENEDOR PRINCIPAL MOBILE FIRST
+   2. PÁGINA PRINCIPAL
    Función:
-   - Define la página como app mobile.
-   - Deja espacio abajo para la navegación inferior.
+   - Define el Hub como una pantalla tipo app.
+   - En mobile deja espacio inferior para la barra de navegación.
 ========================================================= */
 
 .hub-page {
@@ -36,21 +36,10 @@ body {
 }
 
 /* =========================================================
-   3. SIDEBAR DESKTOP
+   3. CONTENIDO PRINCIPAL MOBILE FIRST
    Función:
-   - Oculto en mobile.
-   - Aparece en desktop como menú lateral.
-========================================================= */
-
-.hub-sidebar {
-  display: none;
-}
-
-/* =========================================================
-   4. CONTENIDO PRINCIPAL
-   Función:
-   - Contenedor del hub.
-   - En mobile ocupa todo el ancho.
+   - Centra el contenido.
+   - Limita el ancho para que en mobile se vea tipo app.
 ========================================================= */
 
 .hub-content {
@@ -61,10 +50,21 @@ body {
 }
 
 /* =========================================================
+   4. SIDEBAR DESKTOP
+   Función:
+   - En mobile no se muestra.
+   - En desktop aparece como navegación lateral.
+========================================================= */
+
+.hub-sidebar {
+  display: none;
+}
+
+/* =========================================================
    5. HEADER MOBILE
    Función:
-   - Logo arriba izquierda.
-   - Fecha/hora en pastilla.
+   - Muestra logo de Assurant arriba a la izquierda.
+   - Muestra fecha/hora en una pastilla.
 ========================================================= */
 
 .hub-mobile-header {
@@ -100,10 +100,10 @@ body {
 }
 
 /* =========================================================
-   6. HEADER / SALUDO
+   6. SALUDO Y PERFIL
    Función:
    - Muestra "Hola, Nombre!".
-   - Avatar a la derecha en mobile.
+   - Muestra avatar/perfil a la derecha en mobile.
 ========================================================= */
 
 .hub-hero-header {
@@ -128,6 +128,10 @@ body {
   letter-spacing: -1px;
 }
 
+.hub-profile-menu {
+  position: relative;
+}
+
 .hub-profile-button {
   width: 52px;
   height: 52px;
@@ -136,6 +140,12 @@ body {
   border-radius: 999px;
   background: transparent;
   cursor: pointer;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.hub-profile-button:hover {
+  transform: scale(1.08);
+  filter: brightness(1.05);
 }
 
 .hub-profile-button img {
@@ -145,7 +155,61 @@ body {
 }
 
 /* =========================================================
-   7. CARD PRINCIPAL
+   7. MENÚ DESPLEGABLE DE PERFIL
+   Función:
+   - Menú para cambiar contraseña o cerrar sesión.
+   - En mobile se muestra abajo, cerca del bottom nav.
+   - En desktop se muestra al lado del avatar del sidebar.
+========================================================= */
+
+.hub-profile-dropdown {
+  position: fixed;
+  left: 18px;
+  right: 18px;
+  bottom: 86px;
+  min-width: auto;
+  padding: 10px;
+  border: 1px solid #d0d0d0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.hub-profile-dropdown.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.hub-profile-dropdown a,
+.hub-profile-dropdown button {
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 12px;
+  background: transparent;
+  color: #111111;
+  font-size: 15px;
+  text-align: left;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.hub-profile-dropdown a:hover,
+.hub-profile-dropdown button:hover {
+  background: #eeeeee;
+}
+
+/* =========================================================
+   8. CARD PRINCIPAL
    Función:
    - Muestra imagen del edificio.
    - Contiene botón Reservar.
@@ -189,6 +253,13 @@ body {
   color: #111111;
   text-decoration: none;
   font-size: 17px;
+  transition: background-color 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+}
+
+.hub-reserve-button:hover {
+  background: #ffad25;
+  transform: translateY(-2px);
+  filter: brightness(1.04);
 }
 
 .hub-reserve-button span:last-child {
@@ -207,7 +278,7 @@ body {
 }
 
 /* =========================================================
-   8. CARD SUPERVISOR
+   9. CARD SUPERVISOR
    Función:
    - Muestra supervisor actual.
    - Por ahora puede mostrar "Seleccionar".
@@ -246,6 +317,12 @@ body {
   color: #ffffff;
   font-size: 15px;
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+}
+
+.hub-supervisor-card__button:hover {
+  background: #004f78;
+  transform: translateY(-1px);
 }
 
 .hub-supervisor-card__button img {
@@ -255,7 +332,7 @@ body {
 }
 
 /* =========================================================
-   9. MÉTRICAS PLACEHOLDER
+   10. MÉTRICAS PLACEHOLDER
    Función:
    - Cards de métricas.
    - Por ahora quedan en 0 hasta crear reservas.
@@ -289,10 +366,11 @@ body {
 }
 
 /* =========================================================
-   10. BOTTOM NAV MOBILE
+   11. BOTTOM NAV MOBILE
    Función:
    - Navegación inferior tipo app.
-   - Siempre visible en mobile.
+   - Usa flex en vez de grid para evitar descentrados.
+   - El logo central tiene ancho fijo y los otros iconos se reparten igual.
 ========================================================= */
 
 .hub-bottom-nav {
@@ -303,15 +381,15 @@ body {
   height: 72px;
   border-top: 1.5px solid #bdbdbd;
   background: #ffffff;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
   align-items: center;
   z-index: 20;
 }
 
-.hub-bottom-nav__item,
-.hub-bottom-nav__logo {
+.hub-bottom-nav__item {
+  flex: 1 1 0;
   height: 72px;
+  min-width: 0;
   border: 0;
   background: transparent;
   color: #555555;
@@ -321,31 +399,72 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.hub-bottom-nav__item:hover {
+  background: #d6d6d6;
+  color: #111111;
 }
 
 .hub-bottom-nav__item.is-active {
   color: #111111;
 }
 
+.hub-bottom-nav__item svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
 .hub-bottom-nav__logo {
+  flex: 0 0 82px;
   position: relative;
   top: -18px;
   width: 68px;
   height: 68px;
-  margin: 0 auto;
+  margin: 0;
   border-radius: 999px;
   background: #ffffff;
   border: 1.5px solid #d0d0d0;
+  color: #555555;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hub-bottom-nav__logo img {
   width: 52px;
   height: 52px;
   object-fit: contain;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.hub-bottom-nav__logo:hover img {
+  transform: scale(1.08);
+  filter: brightness(1.05);
 }
 
 /* =========================================================
-   11. DESKTOP
+   12. HOVERS DE LOGOS GENERALES
+   Función:
+   - Logo superior mobile y logo sidebar crecen al hover.
+========================================================= */
+
+.hub-mobile-header__logo img,
+.hub-sidebar__logo img {
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.hub-mobile-header__logo:hover img,
+.hub-sidebar__logo:hover img {
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+/* =========================================================
+   13. DESKTOP
    Función:
    - Cambia de mobile app a layout desktop.
    - Muestra sidebar.
@@ -379,6 +498,12 @@ body {
     background: transparent;
     cursor: pointer;
     margin-bottom: 68px;
+    transition: transform 0.25s ease, filter 0.25s ease;
+  }
+
+  .hub-sidebar__avatar:hover {
+    transform: scale(1.08);
+    filter: brightness(1.05);
   }
 
   .hub-sidebar__avatar img {
@@ -397,16 +522,30 @@ body {
     width: 62px;
     height: 62px;
     border-radius: 12px;
-    color: #111111;
+    color: #555555;
     text-decoration: none;
     font-size: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  }
+
+  .hub-sidebar__link:hover {
+    background: #d6d6d6;
+    color: #111111;
+    transform: translateY(-1px);
   }
 
   .hub-sidebar__link.is-active {
     background: #bdbdbd;
+    color: #111111;
+  }
+
+  .hub-sidebar__link svg {
+    width: 28px;
+    height: 28px;
+    display: block;
   }
 
   .hub-sidebar__logo {
@@ -419,6 +558,20 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+
+  .hub-profile-dropdown {
+    position: absolute;
+    top: 12px;
+    left: 94px;
+    right: auto;
+    bottom: auto;
+    min-width: 190px;
+    transform: translateY(-8px);
+  }
+
+  .hub-profile-dropdown.is-open {
+    transform: translateY(0);
   }
 
   .hub-content {
@@ -513,262 +666,5 @@ body {
 
   .hub-bottom-nav {
     display: none;
-  }
-}
-
-/* =========================================================
-   ICONOS SVG
-   Función:
-   - Ajusta tamaño de los iconos (sidebar y bottom nav)
-   - Permite que cambien de color según estado activo
-========================================================= */
-
-.hub-sidebar__link svg,
-.hub-bottom-nav__item svg {
-  width: 28px;
-  height: 28px;
-  display: block;
-}
-
-/* Color base de los iconos */
-.hub-sidebar__link,
-.hub-bottom-nav__item {
-  color: #555;
-}
-
-/* Color cuando está activo */
-.hub-sidebar__link.is-active,
-.hub-bottom-nav__item.is-active {
-  color: #111;
-}
-
-/* =========================================================
-   AJUSTE BOTTOM NAV MOBILE
-   Función:
-   - Corrige el grid para que los iconos queden centrados.
-   - Evita que la casa quede demasiado a la izquierda.
-========================================================= */
-
-.hub-bottom-nav {
-  grid-template-columns: 1fr 1fr 82px 1fr 1fr;
-}
-
-.hub-bottom-nav__item,
-.hub-bottom-nav__logo {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center; /* 🔥 CENTRA REAL */
-}
-
-.hub-bottom-nav__item svg {
-  width: 28px;
-  height: 28px;
-}
-
-/* =========================================================
-   HOVERS EN ICONOS DE NAVEGACIÓN
-   Función:
-   - Al pasar el mouse, los iconos reciben fondo gris.
-   - Similar al estado activo del hub.
-========================================================= */
-
-.hub-sidebar__link,
-.hub-bottom-nav__item {
-  transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
-}
-
-.hub-sidebar__link:hover,
-.hub-bottom-nav__item:hover {
-  background: #d6d6d6;
-  color: #111111;
-  transform: translateY(-1px);
-}
-
-.hub-bottom-nav__item:hover {
-  border-radius: 12px;
-}
-
-/* =========================================================
-   HOVER LOGO ASSURANT
-   Función:
-   - El logo de Assurant crece suavemente al hacer hover.
-========================================================= */
-
-.hub-sidebar__logo img,
-.hub-bottom-nav__logo img,
-.hub-mobile-header__logo img {
-  transition: transform 0.25s ease, filter 0.25s ease;
-}
-
-.hub-sidebar__logo:hover img,
-.hub-bottom-nav__logo:hover img,
-.hub-mobile-header__logo:hover img {
-  transform: scale(1.08);
-  filter: brightness(1.05);
-}
-
-/* =========================================================
-   HOVER FOTO DE PERFIL
-   Función:
-   - La foto/avatar crece un poco al pasar el mouse.
-========================================================= */
-
-.hub-sidebar__avatar,
-.hub-profile-button {
-  transition: transform 0.25s ease, filter 0.25s ease;
-}
-
-.hub-sidebar__avatar:hover,
-.hub-profile-button:hover {
-  transform: scale(1.08);
-  filter: brightness(1.05);
-}
-
-/* =========================================================
-   MENÚ DESPLEGABLE DE PERFIL
-   Función:
-   - Menú para cambiar contraseña o cerrar sesión.
-   - Se abre desde avatar en desktop/mobile.
-========================================================= */
-
-.hub-profile-menu {
-  position: relative;
-}
-
-.hub-profile-dropdown {
-  position: absolute;
-  top: 88px;
-  right: 0; /* 🔥 clave */
-  left: auto;
-  min-width: 190px;
-  transform: translateY(-8px);
-  padding: 10px;
-  border: 1px solid #d0d0d0;
-  border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 50;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.hub-profile-dropdown.is-open {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.hub-profile-dropdown a,
-.hub-profile-dropdown button {
-  width: 100%;
-  min-height: 40px;
-  border: 0;
-  border-radius: 10px;
-  padding: 0 12px;
-  background: transparent;
-  color: #111111;
-  font-size: 15px;
-  text-align: left;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.hub-profile-dropdown a:hover,
-.hub-profile-dropdown button:hover {
-  background: #eeeeee;
-}
-
-.hub-profile-dropdown--mobile {
-  top: 62px;
-  right: 0;
-  left: auto;
-  transform: translateY(-8px);
-}
-
-.hub-profile-dropdown--mobile.is-open {
-  transform: translateY(0);
-}
-
-/* =========================================================
-   HOVER BOTÓN SUPERVISOR
-   Función:
-   - Cambia color del botón Seleccionar supervisor.
-========================================================= */
-
-.hub-supervisor-card__button {
-  transition: background-color 0.2s ease, transform 0.2s ease, filter 0.2s ease;
-}
-
-.hub-supervisor-card__button:hover {
-  background: #004f78;
-  transform: translateY(-1px);
-}
-
-/* =========================================================
-   HOVER BOTÓN RESERVAR
-   Función:
-   - Hace que el botón Reservar se sienta clickeable.
-========================================================= */
-
-.hub-reserve-button {
-  transition: background-color 0.2s ease, transform 0.2s ease, filter 0.2s ease;
-}
-
-.hub-reserve-button:hover {
-  background: #ffad25;
-  transform: translateY(-2px);
-  filter: brightness(1.04);
-}
-
-/* =========================================================
-   MOBILE: MENÚ DE PERFIL DESDE BOTTOM NAV
-   Función:
-   - En mobile, el dropdown puede abrirse desde el botón inferior.
-========================================================= */
-
-@media (max-width: 899px) {
-  .hub-profile-dropdown {
-    position: fixed;
-    top: auto;
-    left: 18px;
-    right: 18px;
-    bottom: 86px;
-    min-width: auto;
-    transform: translateY(10px);
-  }
-
-  .hub-profile-dropdown.is-open {
-    transform: translateY(0);
-  }
-}
-
-/* =========================================================
-   FIX MOBILE: mover la casita un poco a la derecha
-========================================================= */
-
-@media (max-width: 899px) {
-  .hub-bottom-nav__item:first-child {
-    transform: translateX(50px);
-  }
-}
-
-/* =========================================================
-   FIX DESKTOP: menú perfil más hacia la derecha
-========================================================= */
-
-@media (min-width: 900px) {
-  .hub-sidebar .hub-profile-dropdown {
-    left: 95px;
-    right: auto;
-    top: 90px;
-    transform: translateY(-8px);
-  }
-
-  .hub-sidebar .hub-profile-dropdown.is-open {
-    transform: translateY(0);
   }
 }
