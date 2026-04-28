@@ -1,7 +1,28 @@
-import { apiFetch } from "./api/client.js";
+/* =========================================================
+   LOGIN.JS
+   Función:
+   - Captura el formulario de login.
+   - Envía email y contraseña al backend.
+   - Guarda el JWT y los datos del usuario.
+   - Redirige al hub si el login fue correcto.
+========================================================= */
+
+import { apiFetch } from "../api/client.js";
+
+/* =========================================================
+   1. ELEMENTOS DEL HTML
+   Función:
+   - Buscar el formulario y el lugar donde mostraremos mensajes.
+========================================================= */
 
 const loginForm = document.getElementById("loginForm");
 const loginMessage = document.getElementById("loginMessage");
+
+/* =========================================================
+   2. MOSTRAR MENSAJES
+   Función:
+   - Escribe errores o mensajes de éxito dentro del formulario.
+========================================================= */
 
 function showMessage(message, type = "error") {
   if (!loginMessage) return;
@@ -10,6 +31,13 @@ function showMessage(message, type = "error") {
   loginMessage.className = `auth-form__message auth-form__message--${type}`;
 }
 
+/* =========================================================
+   3. ESTADO LOADING DEL BOTÓN
+   Función:
+   - Desactiva el botón mientras el backend responde.
+   - Evita dobles clicks y dobles requests.
+========================================================= */
+
 function setLoading(button, isLoading) {
   if (!button) return;
 
@@ -17,6 +45,15 @@ function setLoading(button, isLoading) {
   button.classList.toggle("is-loading", isLoading);
   button.textContent = isLoading ? "Entrando..." : "Entrar";
 }
+
+/* =========================================================
+   4. ENVÍO DEL FORMULARIO
+   Función:
+   - Lee email/password.
+   - Valida campos vacíos.
+   - Llama al backend.
+   - Guarda sesión y redirige.
+========================================================= */
 
 loginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -36,17 +73,11 @@ loginForm?.addEventListener("submit", async (event) => {
 
     const result = await apiFetch("/auth/login", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({
+        email,
+        password,
+      }),
     });
-
-    localStorage.setItem("authToken", result.token);
-localStorage.setItem("authUser", JSON.stringify(result.user));
-
-showMessage("Login exitoso. Redirigiendo...", "success");
-
-setTimeout(() => {
-  window.location.href = "./hub.html";
-}, 700);
 
     localStorage.setItem("authToken", result.token);
     localStorage.setItem("authUser", JSON.stringify(result.user));
