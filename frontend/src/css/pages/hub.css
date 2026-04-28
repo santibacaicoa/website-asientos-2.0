@@ -515,3 +515,29 @@ body {
     display: none;
   }
 }
+
+/* =========================================================
+   ICONOS SVG
+   Función:
+   - Ajusta tamaño de los iconos (sidebar y bottom nav)
+   - Permite que cambien de color según estado activo
+========================================================= */
+
+.hub-sidebar__link svg,
+.hub-bottom-nav__item svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+/* Color base de los iconos */
+.hub-sidebar__link,
+.hub-bottom-nav__item {
+  color: #555;
+}
+
+/* Color cuando está activo */
+.hub-sidebar__link.is-active,
+.hub-bottom-nav__item.is-active {
+  color: #111;
+}
