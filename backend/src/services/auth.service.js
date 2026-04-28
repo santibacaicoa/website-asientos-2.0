@@ -41,12 +41,20 @@ export async function registerUser({ email, password }) {
     expiresAt,
   });
 
+try {
   await mailTransporter.sendMail({
     from: env.emailUser,
     to: normalizedEmail,
     subject: "Código de verificación - Website Asientos",
     text: `Tu código de verificación es: ${token}\n\nEste código vence en 15 minutos.`,
   });
+} catch (error) {
+  console.error("Error enviando mail de registro:", error);
+
+  throw new Error(
+    "No se pudo enviar el email de verificación. Revisá EMAIL_USER y EMAIL_PASS en Render."
+  );
+}
 
   return {
     message: "Te enviamos un código de verificación por email.",
