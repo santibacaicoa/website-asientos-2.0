@@ -14,6 +14,13 @@ import {
   validateResetPasswordInput,
 } from "../validators/auth.validator.js";
 
+/* =========================================================
+   REGISTER
+   Función:
+   - Recibe email/password.
+   - Valida datos.
+   - Llama al service para enviar token de verificación.
+========================================================= */
 export async function register(req, res) {
   try {
     const validation = validateRegisterInput(req.body);
@@ -40,6 +47,12 @@ export async function register(req, res) {
   }
 }
 
+/* =========================================================
+   VERIFY EMAIL
+   Función:
+   - Recibe email, token, nombre y apellido.
+   - Si el token es correcto, crea el usuario real.
+========================================================= */
 export async function verifyEmail(req, res) {
   try {
     const validation = validateVerifyEmailInput(req.body);
@@ -66,6 +79,12 @@ export async function verifyEmail(req, res) {
   }
 }
 
+/* =========================================================
+   LOGIN
+   Función:
+   - Valida email/password.
+   - Si son correctos, devuelve token JWT y datos del usuario.
+========================================================= */
 export async function login(req, res) {
   try {
     const validation = validateLoginInput(req.body);
@@ -92,6 +111,12 @@ export async function login(req, res) {
   }
 }
 
+/* =========================================================
+   ME
+   Función:
+   - Devuelve el usuario autenticado.
+   - Depende del middleware requireAuth.
+========================================================= */
 export async function me(req, res) {
   try {
     return res.status(200).json({
@@ -106,6 +131,12 @@ export async function me(req, res) {
   }
 }
 
+/* =========================================================
+   FORGOT PASSWORD
+   Función:
+   - Recibe email.
+   - Envía token para restablecer contraseña.
+========================================================= */
 export async function forgotPasswordController(req, res) {
   try {
     const validation = validateForgotPasswordInput(req.body);
@@ -132,6 +163,12 @@ export async function forgotPasswordController(req, res) {
   }
 }
 
+/* =========================================================
+   RESET PASSWORD
+   Función:
+   - Recibe email, token y nueva contraseña.
+   - Si el token es válido, cambia la contraseña.
+========================================================= */
 export async function resetPasswordController(req, res) {
   try {
     const validation = validateResetPasswordInput(req.body);
@@ -157,27 +194,3 @@ export async function resetPasswordController(req, res) {
     });
   }
 }
-
-export const updateProfilePhoto = async (req, res) => {
-  try {
-    const { email, foto } = req.body;
-
-    if (!email || !foto) {
-      return res.status(400).json({ ok: false, message: "Faltan datos" });
-    }
-
-    await pool.query(
-      "UPDATE usuarios SET foto = $1 WHERE email = $2",
-      [foto, email]
-    );
-
-    return res.json({
-      ok: true,
-      message: "Foto actualizada correctamente",
-    });
-
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ ok: false, message: "Error servidor" });
-  }
-};

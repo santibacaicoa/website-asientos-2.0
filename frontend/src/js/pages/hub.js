@@ -1,11 +1,13 @@
 /* =========================================================
    HUB.JS
-   Función:
+   Función general:
    - Protege el hub.
    - Si no hay token, manda al login.
    - Muestra nombre del usuario logueado.
    - Actualiza fecha y hora.
+   - Maneja menú de perfil.
    - Permite cerrar sesión.
+   - Mantiene foto local temporal sin tocar backend.
 ========================================================= */
 
 /* =========================================================
@@ -34,13 +36,13 @@ const user = userRaw ? JSON.parse(userRaw) : null;
    3. MOSTRAR NOMBRE
    Función:
    - Muestra solo el nombre en el saludo.
-   - Ejemplo: "Hola, Mario!"
+   - Ejemplo: "Hola, Santiago!"
 ========================================================= */
 
 const userFirstNameElement = document.getElementById("userFirstName");
 
-if (user && userFirstNameElement) {
-  userFirstNameElement.textContent = user.nombre || "Usuario";
+if (userFirstNameElement) {
+  userFirstNameElement.textContent = user?.nombre || "Usuario";
 }
 
 /* =========================================================
@@ -108,10 +110,10 @@ if (occupiedToday) occupiedToday.textContent = "0";
 if (availableToday) availableToday.textContent = "0";
 
 /* =========================================================
-   6. MENÚ DE PERFIL Y LOGOUT
+   6. MENÚ DE PERFIL
    Función:
    - Abre/cierra el menú desplegable de perfil.
-   - Permite cerrar sesión desde cualquier botón con clase logoutAction.
+   - Se puede abrir desde desktop, mobile header o bottom nav.
 ========================================================= */
 
 const profileMenuButtonDesktop = document.getElementById("profileMenuButtonDesktop");
@@ -153,123 +155,45 @@ profileMenuButtonBottom?.addEventListener("click", (event) => {
   toggleDropdown(profileDropdownMobile);
 });
 
+profileDropdownDesktop?.addEventListener("click", (event) => {
+  event.stopPropagation();
+});
+
+profileDropdownMobile?.addEventListener("click", (event) => {
+  event.stopPropagation();
+});
+
 document.addEventListener("click", () => {
   closeProfileMenus();
 });
+
+/* =========================================================
+   7. LOGOUT
+   Función:
+   - Borra token y usuario del navegador.
+   - Vuelve al login.
+========================================================= */
 
 document.querySelectorAll(".logoutAction").forEach((button) => {
   button.addEventListener("click", () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("authUser");
+    localStorage.removeItem("userPhoto");
 
     window.location.href = "./login-form.html";
   });
 });
 
-const changePhotoBtn = document.getElementById("changePhotoBtn");
-const photoInput = document.getElementById("photoInput");
-
-changePhotoBtn.addEventListener("click", () => {
-  photoInput.click();
-});
-
-photoInput.addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = async function () {
-    const base64 = reader.result;
-
-    const email = localStorage.getItem("email");
-
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/auth/update-photo`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          foto: base64,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.ok) {
-        localStorage.setItem("foto", base64);
-        updateUIPhoto(base64);
-      }
-
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  reader.readAsDataURL(file);
-});
-
-function updateUIPhoto(foto) {
-  const avatars = document.querySelectorAll(".user-avatar");
-
-  avatars.forEach((img) => {
-    img.src = foto;
-  });
-}
-
-const foto = localStorage.getItem("foto");
-
-if (foto) {
-  updateUIPhoto(foto);
-}
-
 /* =========================================================
-   CAMBIAR FOTO - ABRIR SELECTOR
+   8. FOTO DE PERFIL LOCAL
    Función:
-   - Cuando el usuario toca "Cambiar foto"
-   - Se abre el selector de archivos
+   - Permite cambiar foto solo en este navegador.
+   - No toca backend todavía.
+   - Evita romper deploy mientras estabilizamos.
 ========================================================= */
 
 const changePhotoBtn = document.getElementById("changePhotoBtn");
 const photoInput = document.getElementById("photoInput");
-
-changePhotoBtn?.addEventListener("click", () => {
-  photoInput.click();
-});
-
-/* =========================================================
-   CAMBIAR FOTO - LEER IMAGEN
-   Función:
-   - Detecta cuando el usuario selecciona una imagen
-   - La convierte a base64
-========================================================= */
-
-photoInput?.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function () {
-    const base64 = reader.result;
-
-    // Guardamos en localStorage (por ahora)
-    localStorage.setItem("userPhoto", base64);
-
-    // Actualizamos UI
-    updateUIPhoto(base64);
-  };
-
-  reader.readAsDataURL(file);
-});
-
-/* =========================================================
-   ACTUALIZAR FOTO EN UI
-   Función:
-   - Reemplaza la imagen en todos los avatares
-========================================================= */
 
 function updateUIPhoto(photo) {
   const avatars = document.querySelectorAll(".user-avatar");
@@ -279,11 +203,33 @@ function updateUIPhoto(photo) {
   });
 }
 
+changePhotoBtn?.addEventListener("click", () => {
+  closeProfileMenus();
+  photoInput?.click();
+});
+
+photoInput?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function () {
+    const base64 = reader.result;
+
+    localStorage.setItem("userPhoto", base64);
+    updateUIPhoto(base64);
+  };
+
+  reader.readAsDataURL(file);
+});
+
 /* =========================================================
-   CARGAR FOTO GUARDADA
+   9. CARGAR FOTO GUARDADA
    Función:
-   - Si el usuario ya tiene foto guardada
-   - Se muestra automáticamente al entrar
+   - Si el usuario ya eligió una foto local,
+     se muestra automáticamente al entrar.
 ========================================================= */
 
 const savedPhoto = localStorage.getItem("userPhoto");
