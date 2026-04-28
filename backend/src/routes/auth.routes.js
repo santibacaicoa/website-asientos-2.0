@@ -17,5 +17,7 @@ router.post("/login", login);
 router.get("/me", requireAuth, me);
 router.post("/forgot-password", forgotPasswordController);
 router.post("/reset-password", resetPasswordController);
+router.post("/update-photo", updateProfilePhoto);
 
 export default router;
+

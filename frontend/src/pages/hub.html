@@ -23,10 +23,15 @@
             type="button"
             aria-label="Perfil"
           >
-            <img src="./assets/images/ui/avatar-default.png" alt="Usuario" />
+            <img
+              class="user-avatar"
+              src="./assets/images/ui/avatar-default.png"
+              alt="Usuario"
+            />
           </button>
 
           <div class="hub-profile-dropdown" id="profileDropdownDesktop">
+            <button id="changePhotoBtn">Cambiar foto</button>
             <a href="./reset-password.html">Cambiar contraseña</a>
             <button type="button" class="logoutAction">Cerrar sesión</button>
           </div>
@@ -106,13 +111,18 @@
               type="button"
               aria-label="Perfil"
             >
-              <img src="./assets/images/ui/avatar-default.png" alt="Usuario" />
+              <img
+                class="user-avatar"
+                src="./assets/images/ui/avatar-default.png"
+                alt="Usuario"
+              />
             </button>
 
             <div
               class="hub-profile-dropdown hub-profile-dropdown--mobile"
               id="profileDropdownMobile"
             >
+              <button id="changePhotoBtn">Cambiar foto</button>
               <a href="./reset-password.html">Cambiar contraseña</a>
               <button type="button" class="logoutAction">Cerrar sesión</button>
             </div>
@@ -156,7 +166,11 @@
 
           <button class="hub-supervisor-card__button" type="button">
             <span id="supervisorName">Seleccionar</span>
-            <img src="./assets/images/ui/avatar-default.png" alt="" />
+            <img
+              class="user-avatar"
+              src="./assets/images/ui/avatar-default.png"
+              alt="Usuario"
+            />
           </button>
         </section>
 
@@ -246,6 +260,7 @@
         </button>
       </nav>
     </main>
+    <input type="file" id="photoInput" accept="image/*" style="display: none" />
 
     <script type="module" src="./js/pages/hub.js"></script>
   </body>

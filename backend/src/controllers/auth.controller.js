@@ -157,3 +157,27 @@ export async function resetPasswordController(req, res) {
     });
   }
 }
+
+export const updateProfilePhoto = async (req, res) => {
+  try {
+    const { email, foto } = req.body;
+
+    if (!email || !foto) {
+      return res.status(400).json({ ok: false, message: "Faltan datos" });
+    }
+
+    await pool.query(
+      "UPDATE usuarios SET foto = $1 WHERE email = $2",
+      [foto, email]
+    );
+
+    return res.json({
+      ok: true,
+      message: "Foto actualizada correctamente",
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ ok: false, message: "Error servidor" });
+  }
+};

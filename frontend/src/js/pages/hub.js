@@ -165,3 +165,129 @@ document.querySelectorAll(".logoutAction").forEach((button) => {
     window.location.href = "./login-form.html";
   });
 });
+
+const changePhotoBtn = document.getElementById("changePhotoBtn");
+const photoInput = document.getElementById("photoInput");
+
+changePhotoBtn.addEventListener("click", () => {
+  photoInput.click();
+});
+
+photoInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = async function () {
+    const base64 = reader.result;
+
+    const email = localStorage.getItem("email");
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/update-photo`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          foto: base64,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.ok) {
+        localStorage.setItem("foto", base64);
+        updateUIPhoto(base64);
+      }
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  reader.readAsDataURL(file);
+});
+
+function updateUIPhoto(foto) {
+  const avatars = document.querySelectorAll(".user-avatar");
+
+  avatars.forEach((img) => {
+    img.src = foto;
+  });
+}
+
+const foto = localStorage.getItem("foto");
+
+if (foto) {
+  updateUIPhoto(foto);
+}
+
+/* =========================================================
+   CAMBIAR FOTO - ABRIR SELECTOR
+   Función:
+   - Cuando el usuario toca "Cambiar foto"
+   - Se abre el selector de archivos
+========================================================= */
+
+const changePhotoBtn = document.getElementById("changePhotoBtn");
+const photoInput = document.getElementById("photoInput");
+
+changePhotoBtn?.addEventListener("click", () => {
+  photoInput.click();
+});
+
+/* =========================================================
+   CAMBIAR FOTO - LEER IMAGEN
+   Función:
+   - Detecta cuando el usuario selecciona una imagen
+   - La convierte a base64
+========================================================= */
+
+photoInput?.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function () {
+    const base64 = reader.result;
+
+    // Guardamos en localStorage (por ahora)
+    localStorage.setItem("userPhoto", base64);
+
+    // Actualizamos UI
+    updateUIPhoto(base64);
+  };
+
+  reader.readAsDataURL(file);
+});
+
+/* =========================================================
+   ACTUALIZAR FOTO EN UI
+   Función:
+   - Reemplaza la imagen en todos los avatares
+========================================================= */
+
+function updateUIPhoto(photo) {
+  const avatars = document.querySelectorAll(".user-avatar");
+
+  avatars.forEach((img) => {
+    img.src = photo;
+  });
+}
+
+/* =========================================================
+   CARGAR FOTO GUARDADA
+   Función:
+   - Si el usuario ya tiene foto guardada
+   - Se muestra automáticamente al entrar
+========================================================= */
+
+const savedPhoto = localStorage.getItem("userPhoto");
+
+if (savedPhoto) {
+  updateUIPhoto(savedPhoto);
+}
