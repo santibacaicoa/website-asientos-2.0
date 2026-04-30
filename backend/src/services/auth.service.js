@@ -9,6 +9,8 @@ import {
   findResetPasswordTokenByEmailAndToken,
   updateUserPassword,
   markResetPasswordTokenUsed,
+  updateUserPhotoById,
+  findUserById,
 } from "../repositories/auth.repository.js";
 
 import { hashPassword, comparePassword } from "../utils/password.js";
@@ -235,5 +237,44 @@ export async function resetPassword({ email, token, password }) {
 
   return {
     message: "Contraseña actualizada correctamente.",
+  };
+}
+
+export async function updateProfilePhoto({ userId, foto }) {
+  if (!foto || typeof foto !== "string") {
+    throw new Error("La foto es obligatoria.");
+  }
+
+  if (!foto.startsWith("data:image/")) {
+    throw new Error("El archivo debe ser una imagen válida.");
+  }
+
+  const maxSizeInChars = 2_000_000;
+
+  if (foto.length > maxSizeInChars) {
+    throw new Error("La imagen es demasiado grande.");
+  }
+
+  const updatedUser = await updateUserPhotoById(userId, foto);
+
+  if (!updatedUser) {
+    throw new Error("Usuario no encontrado.");
+  }
+
+  return {
+    message: "Foto actualizada correctamente.",
+    user: updatedUser,
+  };
+}
+
+export async function getProfile({ userId }) {
+  const user = await findUserById(userId);
+
+  if (!user) {
+    throw new Error("Usuario no encontrado.");
+  }
+
+  return {
+    user,
   };
 }

@@ -4,6 +4,8 @@ import {
   loginUser,
   forgotPassword,
   resetPassword,
+  updateProfilePhoto,
+  getProfile,
 } from "../services/auth.service.js";
 
 import {
@@ -182,6 +184,43 @@ export async function resetPasswordController(req, res) {
     }
 
     const result = await resetPassword(req.body);
+
+    return res.status(200).json({
+      ok: true,
+      ...result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+}
+
+export async function updateProfilePhotoController(req, res) {
+  try {
+    const result = await updateProfilePhoto({
+      userId: req.user.id,
+      foto: req.body.foto,
+    });
+
+    return res.status(200).json({
+      ok: true,
+      ...result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+}
+
+export async function getProfileController(req, res) {
+  try {
+    const result = await getProfile({
+      userId: req.user.id,
+    });
 
     return res.status(200).json({
       ok: true,

@@ -6,6 +6,8 @@ import {
   me,
   forgotPasswordController,
   resetPasswordController,
+  updateProfilePhotoController,
+  getProfileController,
 } from "../controllers/auth.controller.js";
 import { requireAuth } from "../middlewares/auth.middleware.js";
 
@@ -17,5 +19,7 @@ router.post("/login", login);
 router.get("/me", requireAuth, me);
 router.post("/forgot-password", forgotPasswordController);
 router.post("/reset-password", resetPasswordController);
+router.get("/profile", requireAuth, getProfileController);
+router.put("/profile/photo", requireAuth, updateProfilePhotoController);
 
 export default router;
