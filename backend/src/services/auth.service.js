@@ -42,34 +42,29 @@ export async function registerUser({ email, password }) {
   });
 
 try {
-  const mailResult = await Promise.race([
-    mailTransporter.sendMail({
-      from: `"Website Asientos" <${env.emailUser}>`,
-      to: normalizedEmail,
-      subject: "Código de verificación - Website Asientos",
-      text: `Tu código de verificación es: ${token}\n\nEste código vence en 15 minutos.`,
-    }),
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Timeout mail")), 10000)
-    ),
-  ]);
+  const { data, error } = await resend.emails.send({
+    from: "Website Asientos <onboarding@resend.dev>",
+    to: [normalizedEmail],
+    subject: "Código de verificación - Website Asientos",
+    html: `
+      <h2>Código de verificación</h2>
+      <p>Tu código de verificación es:</p>
+      <h1>${token}</h1>
+      <p>Este código vence en 15 minutos.</p>
+    `,
+  });
 
-  console.log("MAIL REGISTRO ENVIADO:", {
-    to: normalizedEmail,
-    messageId: mailResult?.messageId,
-    accepted: mailResult?.accepted,
-    rejected: mailResult?.rejected,
-  });
+  if (error) {
+    console.error("ERROR RESEND REGISTRO:", error);
+    throw new Error("No se pudo enviar el email de verificación.");
+  }
+
+  console.log("MAIL REGISTRO ENVIADO CON RESEND:", data);
 } catch (error) {
-  console.error("ERROR MAIL REGISTRO:", {
-    message: error.message,
-    code: error.code,
-    command: error.command,
-    response: error.response,
-  });
+  console.error("ERROR MAIL REGISTRO:", error);
 
   throw new Error(
-    "No se pudo enviar el email de verificación. Revisá EMAIL_USER y EMAIL_PASS en Render."
+    "No se pudo enviar el email de verificación. Revisá RESEND_API_KEY en Render."
   );
 }
 
@@ -178,16 +173,32 @@ export async function forgotPassword({ email }) {
     expiresAt,
   });
 
-  await mailTransporter.sendMail({
-    from: env.emailUser,
-    to: normalizedEmail,
+  try {
+  const { data, error } = await resend.emails.send({
+    from: "Website Asientos <onboarding@resend.dev>",
+    to: [normalizedEmail],
     subject: "Restablecer contraseña - Website Asientos",
-    text: `
-Tu token para restablecer la contraseña es: ${token}
-
-Este token vence en 15 minutos.
-    `.trim(),
+    html: `
+      <h2>Restablecer contraseña</h2>
+      <p>Tu código para restablecer la contraseña es:</p>
+      <h1>${token}</h1>
+      <p>Este código vence en 15 minutos.</p>
+    `,
   });
+
+  if (error) {
+    console.error("ERROR RESEND RESET PASSWORD:", error);
+    throw new Error("No se pudo enviar el email para restablecer contraseña.");
+  }
+
+  console.log("MAIL RESET ENVIADO CON RESEND:", data);
+} catch (error) {
+  console.error("ERROR MAIL RESET:", error);
+
+  throw new Error(
+    "No se pudo enviar el email para restablecer contraseña. Revisá RESEND_API_KEY en Render."
+  );
+}
 
   return {
     message:

@@ -10,5 +10,7 @@ export const env = {
   emailUser: process.env.EMAIL_USER || process.env.SMTP_USER,
   emailPass: process.env.EMAIL_PASS || process.env.SMTP_PASS,
 
+  resendApiKey: process.env.RESEND_API_KEY,
+
   frontendUrl: process.env.FRONTEND_URL,
 };
