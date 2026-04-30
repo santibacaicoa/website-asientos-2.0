@@ -44,7 +44,7 @@ export async function registerUser({ email, password }) {
 
 try {
   const { data, error } = await resend.emails.send({
-    from: "Website Asientos <onboarding@resend.dev>",
+    from: "Website Asientos <noreply@assientos-assurantweb.fun>",
     to: [normalizedEmail],
     subject: "Código de verificación - Website Asientos",
     html: `
@@ -176,7 +176,7 @@ export async function forgotPassword({ email }) {
 
   try {
   const { data, error } = await resend.emails.send({
-    from: "Website Asientos <onboarding@resend.dev>",
+    from: "Website Asientos <noreply@assientos-assurantweb.fun>",
     to: [normalizedEmail],
     subject: "Restablecer contraseña - Website Asientos",
     html: `
