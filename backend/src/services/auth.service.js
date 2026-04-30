@@ -16,6 +16,7 @@ import { generateRandomToken } from "../utils/token.js";
 import { signAccessToken } from "../utils/jwt.js";
 import { mailTransporter } from "../config/mail.js";
 import { env } from "../config/env.js";
+import { resend } from "../config/resend.js";
 
 export async function registerUser({ email, password }) {
   const normalizedEmail = email.trim().toLowerCase();
