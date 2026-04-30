@@ -1,8 +1,23 @@
 import { db } from "../config/db.js";
 
+/* =========================================================
+   BUSCAR USUARIO POR EMAIL
+   Función:
+   - Se usa para login, registro y recuperación.
+   - Ahora también devuelve foto.
+========================================================= */
 export async function findUserByEmail(email) {
   const query = `
-    SELECT id, email, password_hash, nombre, apellido, rol, estado_cuenta, supervisor_id
+    SELECT 
+      id, 
+      email, 
+      password_hash, 
+      nombre, 
+      apellido, 
+      rol, 
+      estado_cuenta, 
+      supervisor_id,
+      foto
     FROM usuarios
     WHERE email = $1
     LIMIT 1
@@ -12,6 +27,34 @@ export async function findUserByEmail(email) {
   return result.rows[0] || null;
 }
 
+/* =========================================================
+   BUSCAR USUARIO POR ID
+   Función:
+   - Se usa para obtener perfil del usuario logueado.
+========================================================= */
+export async function findUserById(userId) {
+  const query = `
+    SELECT 
+      id, 
+      email, 
+      nombre, 
+      apellido, 
+      rol, 
+      estado_cuenta,
+      supervisor_id,
+      foto
+    FROM usuarios
+    WHERE id = $1
+    LIMIT 1
+  `;
+
+  const result = await db.query(query, [userId]);
+  return result.rows[0] || null;
+}
+
+/* =========================================================
+   TOKENS DE VERIFICACIÓN DE EMAIL
+========================================================= */
 export async function findVerificationTokenByEmail(email) {
   const query = `
     SELECT id, email, token, nombre, apellido, password_hash, expires_at, created_at
@@ -73,6 +116,12 @@ export async function createVerificationToken({
   return result.rows[0];
 }
 
+/* =========================================================
+   CREAR USUARIO
+   Función:
+   - Crea usuario empleado activo.
+   - La foto arranca en NULL.
+========================================================= */
 export async function createUser({
   email,
   passwordHash,
@@ -87,10 +136,20 @@ export async function createUser({
       apellido,
       rol,
       estado_cuenta,
-      supervisor_id
+      supervisor_id,
+      foto
     )
-    VALUES ($1, $2, $3, $4, 'empleado', 'activo', NULL)
-    RETURNING id, email, nombre, apellido, rol, estado_cuenta, supervisor_id, created_at
+    VALUES ($1, $2, $3, $4, 'empleado', 'activo', NULL, NULL)
+    RETURNING 
+      id, 
+      email, 
+      nombre, 
+      apellido, 
+      rol, 
+      estado_cuenta, 
+      supervisor_id, 
+      foto,
+      created_at
   `;
 
   const values = [email, passwordHash, nombre, apellido];
@@ -99,6 +158,9 @@ export async function createUser({
   return result.rows[0];
 }
 
+/* =========================================================
+   RESET PASSWORD TOKENS
+========================================================= */
 export async function deleteResetTokensByUserId(usuarioId) {
   await db.query(
     `DELETE FROM tokens_reset_password WHERE usuario_id = $1`,
@@ -153,4 +215,30 @@ export async function markResetPasswordTokenUsed(tokenId) {
     `UPDATE tokens_reset_password SET used_at = NOW() WHERE id = $1`,
     [tokenId]
   );
+}
+
+/* =========================================================
+   FOTO DE PERFIL
+   Función:
+   - Guarda la foto en la columna usuarios.foto.
+   - Devuelve el usuario actualizado.
+========================================================= */
+export async function updateUserPhotoById(userId, foto) {
+  const query = `
+    UPDATE usuarios
+    SET foto = $1
+    WHERE id = $2
+    RETURNING 
+      id, 
+      email, 
+      nombre, 
+      apellido, 
+      rol, 
+      estado_cuenta,
+      supervisor_id, 
+      foto
+  `;
+
+  const result = await db.query(query, [foto, userId]);
+  return result.rows[0] || null;
 }
