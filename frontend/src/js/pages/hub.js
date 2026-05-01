@@ -231,51 +231,96 @@ document.querySelectorAll(".logoutAction").forEach((button) => {
    - Actualiza localStorage y UI.
 ========================================================= */
 
-const changePhotoBtn = document.getElementById("changePhotoBtn");
+const changePhotoButtons = document.querySelectorAll(".changePhotoBtn");
 const photoInput = document.getElementById("photoInput");
 
-changePhotoBtn?.addEventListener("click", () => {
-  closeProfileMenus();
-  photoInput?.click();
+changePhotoButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    closeProfileMenus();
+    photoInput?.click();
+  });
 });
 
-photoInput?.addEventListener("change", (event) => {
+function resizeImageToBase64(file, maxSize = 600, quality = 0.78) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      img.src = reader.result;
+    };
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+
+      let { width, height } = img;
+
+      if (width > height && width > maxSize) {
+        height = Math.round((height * maxSize) / width);
+        width = maxSize;
+      } else if (height > maxSize) {
+        width = Math.round((width * maxSize) / height);
+        height = maxSize;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+
+    reader.onerror = reject;
+    img.onerror = reject;
+
+    reader.readAsDataURL(file);
+  });
+}
+
+photoInput?.addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
 
   if (!file) return;
 
-  const reader = new FileReader();
+  try {
+    const base64 = await resizeImageToBase64(file);
 
-  reader.onload = async function () {
-    const base64 = reader.result;
+    const res = await fetch(`${BACKEND_URL}/api/auth/profile/photo`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        foto: base64,
+      }),
+    });
+
+    const text = await res.text();
+
+    let data;
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/auth/profile/photo`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          foto: base64,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!data.ok || !data.user) {
-        console.error("Error actualizando foto:", data.message);
-        return;
-      }
-
-      user = data.user;
-
-      localStorage.setItem("authUser", JSON.stringify(user));
-      updateUIPhoto(user.foto);
-    } catch (error) {
-      console.error("Error subiendo foto:", error);
+      data = JSON.parse(text);
+    } catch {
+      console.error("Respuesta no JSON del backend:", text);
+      return;
     }
-  };
 
-  reader.readAsDataURL(file);
+    if (!data.ok || !data.user) {
+      console.error("Error actualizando foto:", data.message);
+      return;
+    }
+
+    user = data.user;
+
+    localStorage.setItem("authUser", JSON.stringify(user));
+    updateUIPhoto(user.foto);
+
+    photoInput.value = "";
+  } catch (error) {
+    console.error("Error subiendo foto:", error);
+  }
 });
