@@ -18,13 +18,26 @@
          - Se oculta en mobile.
     ====================================================== -->
       <aside class="map-sidebar">
-        <button class="map-sidebar__avatar" type="button" aria-label="Perfil">
-          <img
-            class="user-avatar"
-            src="./assets/images/ui/avatar-default.png"
-            alt="Usuario"
-          />
-        </button>
+        <div class="map-profile-menu">
+          <button
+            class="map-sidebar__avatar"
+            id="profileMenuButtonDesktop"
+            type="button"
+            aria-label="Perfil"
+          >
+            <img
+              class="user-avatar"
+              src="./assets/images/ui/avatar-default.png"
+              alt="Usuario"
+            />
+          </button>
+
+          <div class="map-profile-dropdown" id="profileDropdownDesktop">
+            <button class="changePhotoBtn">Cambiar foto</button>
+            <a href="./forgot-password.html">Cambiar contraseña</a>
+            <button type="button" class="logoutAction">Cerrar sesión</button>
+          </div>
+        </div>
 
         <nav class="map-sidebar__nav" aria-label="Navegación desktop">
           <a class="map-sidebar__link" href="./hub.html" aria-label="Hub">
@@ -76,17 +89,26 @@
            HEADER MOBILE
       ====================================================== -->
         <header class="map-mobile-header">
-          <button
-            class="map-mobile-header__avatar"
-            type="button"
-            aria-label="Perfil"
-          >
-            <img
-              class="user-avatar"
-              src="./assets/images/ui/avatar-default.png"
-              alt="Usuario"
-            />
-          </button>
+          <div class="map-profile-menu">
+            <button
+              class="map-mobile-header__avatar"
+              id="profileMenuButtonMobile"
+              type="button"
+              aria-label="Perfil"
+            >
+              <img
+                class="user-avatar"
+                src="./assets/images/ui/avatar-default.png"
+                alt="Usuario"
+              />
+            </button>
+
+            <div class="map-profile-dropdown" id="profileDropdownMobile">
+              <button class="changePhotoBtn">Cambiar foto</button>
+              <a href="./forgot-password.html">Cambiar contraseña</a>
+              <button type="button" class="logoutAction">Cerrar sesión</button>
+            </div>
+          </div>
 
           <a
             class="map-mobile-header__logo"
@@ -292,7 +314,12 @@
           </svg>
         </a>
 
-        <button class="map-bottom-nav__item" type="button" aria-label="Perfil">
+        <button
+          class="map-bottom-nav__item"
+          id="profileMenuButtonBottom"
+          type="button"
+          aria-label="Perfil"
+        >
           <svg viewBox="0 0 24 24">
             <path
               d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.2 0-7 2.2-7 5v1h14v-1c0-2.8-2.8-5-7-5Z"

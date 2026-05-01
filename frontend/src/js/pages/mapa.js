@@ -127,3 +127,71 @@ document.querySelectorAll(".seat").forEach((seat) => {
     seat.classList.add("is-selected");
   });
 });
+
+/* =========================================================
+   5. MENÚ DE PERFIL (IGUAL QUE HUB)
+========================================================= */
+
+const profileMenuButtonDesktop = document.getElementById("profileMenuButtonDesktop");
+const profileMenuButtonMobile = document.getElementById("profileMenuButtonMobile");
+const profileMenuButtonBottom = document.getElementById("profileMenuButtonBottom");
+
+const profileDropdownDesktop = document.getElementById("profileDropdownDesktop");
+const profileDropdownMobile = document.getElementById("profileDropdownMobile");
+
+function closeProfileMenus() {
+  profileDropdownDesktop?.classList.remove("is-open");
+  profileDropdownMobile?.classList.remove("is-open");
+}
+
+function toggleDropdown(dropdown) {
+  if (!dropdown) return;
+
+  const isOpen = dropdown.classList.contains("is-open");
+
+  closeProfileMenus();
+
+  if (!isOpen) {
+    dropdown.classList.add("is-open");
+  }
+}
+
+profileMenuButtonDesktop?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleDropdown(profileDropdownDesktop);
+});
+
+profileMenuButtonMobile?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleDropdown(profileDropdownMobile);
+});
+
+profileMenuButtonBottom?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleDropdown(profileDropdownMobile);
+});
+
+profileDropdownDesktop?.addEventListener("click", (event) => {
+  event.stopPropagation();
+});
+
+profileDropdownMobile?.addEventListener("click", (event) => {
+  event.stopPropagation();
+});
+
+document.addEventListener("click", () => {
+  closeProfileMenus();
+});
+
+/* =========================================================
+   6. LOGOUT
+========================================================= */
+
+document.querySelectorAll(".logoutAction").forEach((button) => {
+  button.addEventListener("click", () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authUser");
+
+    window.location.href = "./login-form.html";
+  });
+});
