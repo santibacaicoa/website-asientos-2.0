@@ -754,3 +754,63 @@ body {
     display: none;
   }
 }
+
+/* =========================================================
+   FIX PERFIL MAPA IGUAL AL HUB
+========================================================= */
+
+.map-profile-dropdown {
+  min-width: 210px;
+  padding: 10px;
+  border-radius: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.map-profile-dropdown a,
+.map-profile-dropdown button {
+  min-height: 40px;
+  padding: 0 12px;
+  font-size: 15px;
+  line-height: 1;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+/* Desktop: misma posición que hub */
+@media (min-width: 900px) {
+  .map-sidebar .map-profile-dropdown {
+    position: absolute;
+    top: 12px;
+    left: 94px;
+    right: auto;
+    bottom: auto;
+  }
+
+  .map-sidebar__link {
+    color: #555555;
+  }
+
+  .map-sidebar__link:hover {
+    background: #d6d6d6;
+    color: #111111;
+  }
+
+  .map-sidebar__link.is-active {
+    background: #bdbdbd;
+    color: #111111;
+  }
+}
+
+/* Mobile: menú abierto desde bottom nav */
+@media (max-width: 899px) {
+  #profileDropdownMobile {
+    position: fixed;
+    right: 18px;
+    left: auto;
+    bottom: 86px;
+    top: auto;
+    z-index: 200;
+  }
+}
