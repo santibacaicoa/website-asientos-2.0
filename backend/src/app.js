@@ -6,8 +6,22 @@ import authRoutes from "./routes/auth.routes.js";
 const app = express();
 
 app.use(cors({
-  origin: env.frontendUrl,
-  credentials: true,
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "https://website-asientos-2-0-frontend.onrender.com",
+      "https://www.assientos-assurantweb.fun"
+    ];
+
+    // permitir requests sin origin (ej: Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("CORS no permitido"));
+  },
+  credentials: true
 }));
 
 app.use(express.json());
