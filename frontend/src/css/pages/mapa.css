@@ -24,7 +24,7 @@ body {
 ========================================================= */
 
 .map-page {
-  min-height: 100vh;
+  min-height: 100dvh;
   padding-bottom: 86px;
   background:
     linear-gradient(rgba(255,255,255,0.78), rgba(255,255,255,0.78)),
@@ -388,11 +388,12 @@ body {
 
   .map-sidebar {
     display: flex;
-    min-height: 100vh;
+    min-height: 100dvh;
     border-right: 1.5px solid #bdbdbd;
     background: rgba(255,255,255,0.96);
     flex-direction: column;
     align-items: center;
+    align-self: stretch;
     padding: 34px 0 32px;
   }
 
