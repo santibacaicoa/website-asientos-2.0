@@ -7,14 +7,18 @@
    - Actualiza fecha y hora.
    - Maneja menú de perfil.
    - Permite cerrar sesión.
-   - Mantiene foto local temporal sin tocar backend.
+   - Carga y guarda foto de perfil desde backend/Neon.
 ========================================================= */
 
 /* =========================================================
+   0. CONFIG
+========================================================= */
+
+const BACKEND_URL = "https://website-asientos-2-0-backend.onrender.com";
+const DEFAULT_AVATAR = "./assets/images/ui/avatar-default.png";
+
+/* =========================================================
    1. VERIFICAR SESIÓN
-   Función:
-   - Buscar el token guardado al hacer login.
-   - Si no existe, el usuario no está logueado.
 ========================================================= */
 
 const token = localStorage.getItem("authToken");
@@ -25,31 +29,74 @@ if (!token) {
 
 /* =========================================================
    2. LEER DATOS DEL USUARIO
-   Función:
-   - Recupera los datos básicos guardados en login.
 ========================================================= */
 
 const userRaw = localStorage.getItem("authUser");
-const user = userRaw ? JSON.parse(userRaw) : null;
+let user = userRaw ? JSON.parse(userRaw) : null;
 
 /* =========================================================
    3. MOSTRAR NOMBRE
-   Función:
-   - Muestra solo el nombre en el saludo.
-   - Ejemplo: "Hola, Santiago!"
 ========================================================= */
 
 const userFirstNameElement = document.getElementById("userFirstName");
 
-if (userFirstNameElement) {
-  userFirstNameElement.textContent = user?.nombre || "Usuario";
+function updateUserName(currentUser) {
+  if (userFirstNameElement) {
+    userFirstNameElement.textContent = currentUser?.nombre || "Usuario";
+  }
 }
 
+updateUserName(user);
+
 /* =========================================================
-   4. FECHA Y HORA
+   4. ACTUALIZAR AVATAR
+========================================================= */
+
+function updateUIPhoto(photo) {
+  const avatars = document.querySelectorAll(".user-avatar");
+
+  avatars.forEach((img) => {
+    img.src = photo || DEFAULT_AVATAR;
+  });
+}
+
+updateUIPhoto(user?.foto);
+
+/* =========================================================
+   5. CARGAR PERFIL DESDE BACKEND
    Función:
-   - Muestra fecha/hora en mobile.
-   - Muestra fecha en desktop.
+   - Al entrar al hub, pide el usuario actualizado.
+   - Si tiene foto en Neon, la muestra.
+========================================================= */
+
+async function loadUserProfile() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/auth/profile`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!data.ok || !data.user) return;
+
+    user = data.user;
+
+    localStorage.setItem("authUser", JSON.stringify(user));
+
+    updateUserName(user);
+    updateUIPhoto(user.foto);
+  } catch (error) {
+    console.error("Error cargando perfil:", error);
+  }
+}
+
+loadUserProfile();
+
+/* =========================================================
+   6. FECHA Y HORA
 ========================================================= */
 
 const currentDateTimeMobile = document.getElementById("currentDateTimeMobile");
@@ -95,10 +142,7 @@ updateDateTime();
 setInterval(updateDateTime, 60 * 1000);
 
 /* =========================================================
-   5. MÉTRICAS PLACEHOLDER
-   Función:
-   - Por ahora quedan en 0.
-   - Luego se conectarán al sistema de reservas.
+   7. MÉTRICAS PLACEHOLDER
 ========================================================= */
 
 const totalSeats = document.getElementById("totalSeats");
@@ -110,10 +154,7 @@ if (occupiedToday) occupiedToday.textContent = "0";
 if (availableToday) availableToday.textContent = "0";
 
 /* =========================================================
-   6. MENÚ DE PERFIL
-   Función:
-   - Abre/cierra el menú desplegable de perfil.
-   - Se puede abrir desde desktop, mobile header o bottom nav.
+   8. MENÚ DE PERFIL
 ========================================================= */
 
 const profileMenuButtonDesktop = document.getElementById("profileMenuButtonDesktop");
@@ -168,40 +209,30 @@ document.addEventListener("click", () => {
 });
 
 /* =========================================================
-   7. LOGOUT
-   Función:
-   - Borra token y usuario del navegador.
-   - Vuelve al login.
+   9. LOGOUT
 ========================================================= */
 
 document.querySelectorAll(".logoutAction").forEach((button) => {
   button.addEventListener("click", () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("authUser");
-    localStorage.removeItem("userPhoto");
 
     window.location.href = "./login-form.html";
   });
 });
 
 /* =========================================================
-   8. FOTO DE PERFIL LOCAL
+   10. CAMBIAR FOTO DE PERFIL
    Función:
-   - Permite cambiar foto solo en este navegador.
-   - No toca backend todavía.
-   - Evita romper deploy mientras estabilizamos.
+   - Abre selector de imagen.
+   - Convierte imagen a base64.
+   - La manda al backend.
+   - Backend la guarda en Neon.
+   - Actualiza localStorage y UI.
 ========================================================= */
 
 const changePhotoBtn = document.getElementById("changePhotoBtn");
 const photoInput = document.getElementById("photoInput");
-
-function updateUIPhoto(photo) {
-  const avatars = document.querySelectorAll(".user-avatar");
-
-  avatars.forEach((img) => {
-    img.src = photo;
-  });
-}
 
 changePhotoBtn?.addEventListener("click", () => {
   closeProfileMenus();
@@ -215,25 +246,36 @@ photoInput?.addEventListener("change", (event) => {
 
   const reader = new FileReader();
 
-  reader.onload = function () {
+  reader.onload = async function () {
     const base64 = reader.result;
 
-    localStorage.setItem("userPhoto", base64);
-    updateUIPhoto(base64);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/profile/photo`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          foto: base64,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!data.ok || !data.user) {
+        console.error("Error actualizando foto:", data.message);
+        return;
+      }
+
+      user = data.user;
+
+      localStorage.setItem("authUser", JSON.stringify(user));
+      updateUIPhoto(user.foto);
+    } catch (error) {
+      console.error("Error subiendo foto:", error);
+    }
   };
 
   reader.readAsDataURL(file);
 });
-
-/* =========================================================
-   9. CARGAR FOTO GUARDADA
-   Función:
-   - Si el usuario ya eligió una foto local,
-     se muestra automáticamente al entrar.
-========================================================= */
-
-const savedPhoto = localStorage.getItem("userPhoto");
-
-if (savedPhoto) {
-  updateUIPhoto(savedPhoto);
-}
