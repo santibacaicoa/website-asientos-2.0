@@ -1,0 +1,618 @@
+/* =========================================================
+   1. RESET GENERAL
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111111;
+  background: #f7f7f7;
+}
+
+/* =========================================================
+   2. LAYOUT GENERAL MOBILE FIRST
+========================================================= */
+
+.map-page {
+  min-height: 100vh;
+  padding-bottom: 86px;
+  background:
+    linear-gradient(rgba(255,255,255,0.78), rgba(255,255,255,0.78)),
+    url("./assets/images/ui/captura.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.map-content {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 22px 18px 0;
+}
+
+.map-sidebar {
+  display: none;
+}
+
+/* =========================================================
+   3. HEADER MOBILE
+========================================================= */
+
+.map-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.map-mobile-header__avatar,
+.map-mobile-header__logo {
+  width: 52px;
+  height: 52px;
+  border: 0;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.map-mobile-header__avatar img,
+.map-mobile-header__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.user-avatar {
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+/* =========================================================
+   4. TÍTULOS
+========================================================= */
+
+.map-title {
+  margin: 0 0 22px;
+  font-size: 25px;
+  line-height: 1.1;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   5. EDIFICIO
+========================================================= */
+
+.building-card {
+  display: none;
+}
+
+/* =========================================================
+   6. GRID DE PISOS MOBILE
+========================================================= */
+
+.floor-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.floor-card {
+  width: 100%;
+  min-height: 154px;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.92);
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 82px 70px 1fr;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.floor-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.16);
+  border-color: #777777;
+}
+
+.floor-card:active {
+  transform: scale(0.98);
+}
+
+.floor-card__building {
+  width: 78px;
+  height: 120px;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.floor-card:hover .floor-card__building {
+  transform: translateY(-4px) scale(1.05);
+}
+
+.floor-card strong {
+  font-size: 54px;
+  color: #777777;
+}
+
+.floor-card__map {
+  width: 100%;
+  height: 106px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+/* =========================================================
+   7. DETALLE DE PISO MOBILE
+========================================================= */
+
+.is-hidden {
+  display: none;
+}
+
+.floor-detail-header {
+  margin-bottom: 14px;
+}
+
+.back-to-floors {
+  margin-bottom: 14px;
+  border: 0;
+  background: transparent;
+  color: #111111;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.floor-detail-card {
+  border: 1.5px solid #777777;
+  border-radius: 18px;
+  background: #b0b4bf;
+  padding: 10px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+}
+
+.floor-preview {
+  position: relative;
+  width: 100%;
+  min-height: 230px;
+  border: 2px solid #222222;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #dddddd;
+}
+
+.floor-preview img {
+  width: 100%;
+  height: 100%;
+  min-height: 230px;
+  object-fit: contain;
+  display: block;
+}
+
+.seat {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(255,255,255,0.8);
+  border-radius: 8px;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    outline 0.18s ease;
+}
+
+.seat:hover {
+  transform: translate(-50%, -50%) scale(1.18);
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.55);
+  z-index: 5;
+}
+
+.seat.is-selected {
+  outline: 3px solid #ffffff;
+  box-shadow: 0 0 0 6px rgba(0,0,0,0.2);
+}
+
+.seat--free {
+  background: #2faf69;
+}
+
+.seat--occupied {
+  background: #e32121;
+}
+
+.seat--half {
+  background: #ff9f13;
+}
+
+.seat--outside {
+  background: #000000;
+}
+
+/* =========================================================
+   8. LEYENDA Y BOTONES
+========================================================= */
+
+.floor-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px 6px;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.floor-legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.dot--occupied { background: #e32121; }
+.dot--free { background: #2faf69; }
+.dot--outside { background: #000000; }
+.dot--half { background: #ff9f13; }
+
+.floor-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.floor-action {
+  min-height: 50px;
+  border: 0;
+  border-radius: 10px;
+  color: #111111;
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+.floor-action:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.floor-action--cancel {
+  background: #dd2828;
+}
+
+.floor-action--confirm {
+  background: #2faf69;
+}
+
+/* =========================================================
+   9. BOTTOM NAV MOBILE
+========================================================= */
+
+.map-bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 72px;
+  border-top: 1.5px solid #bdbdbd;
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  z-index: 20;
+}
+
+.map-bottom-nav__item {
+  width: 100%;
+  height: 72px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #555555;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.map-bottom-nav__item.is-active {
+  color: #111111;
+}
+
+.map-bottom-nav__item svg {
+  width: 26px;
+  height: 26px;
+}
+
+.map-bottom-nav__logo {
+  justify-self: center;
+  position: relative;
+  top: -18px;
+  width: 68px;
+  height: 68px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1.5px solid #d0d0d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-bottom-nav__logo img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+/* =========================================================
+   10. DESKTOP
+========================================================= */
+
+@media (min-width: 900px) {
+  .map-page {
+    padding-bottom: 0;
+    display: grid;
+    grid-template-columns: 126px 1fr;
+  }
+
+  .map-sidebar {
+    display: flex;
+    min-height: 100vh;
+    border-right: 1.5px solid #bdbdbd;
+    background: rgba(255,255,255,0.96);
+    flex-direction: column;
+    align-items: center;
+    padding: 34px 0 32px;
+  }
+
+  .map-sidebar__avatar {
+    width: 78px;
+    height: 78px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    margin-bottom: 68px;
+    transition: transform 0.25s ease;
+  }
+
+  .map-sidebar__avatar:hover {
+    transform: scale(1.08);
+  }
+
+  .map-sidebar__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .map-sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+
+  .map-sidebar__link {
+    width: 62px;
+    height: 62px;
+    border-radius: 12px;
+    color: #111111;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .map-sidebar__link:hover {
+    background: #d6d6d6;
+    transform: translateY(-1px);
+  }
+
+  .map-sidebar__link.is-active {
+    background: #bdbdbd;
+  }
+
+  .map-sidebar__link svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .map-sidebar__logo {
+    width: 70px;
+    height: 70px;
+    margin-top: auto;
+  }
+
+  .map-sidebar__logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.25s ease;
+  }
+
+  .map-sidebar__logo:hover img {
+    transform: scale(1.08);
+  }
+
+  .map-content {
+    max-width: none;
+    padding: 54px 44px;
+  }
+
+  .map-mobile-header {
+    display: none;
+  }
+
+  .map-title {
+    text-align: center;
+    font-size: 28px;
+  }
+
+  .map-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 38px;
+    align-items: center;
+  }
+
+  .building-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 620px;
+  }
+
+  .building-card__image {
+    width: 320px;
+    max-height: 620px;
+    object-fit: contain;
+    filter: drop-shadow(0 16px 22px rgba(0,0,0,0.18));
+    transition:
+      transform 0.25s ease,
+      filter 0.25s ease;
+  }
+
+  .building-card:hover .building-card__image {
+    transform: translateY(-8px) scale(1.02);
+    filter: drop-shadow(0 24px 28px rgba(0,0,0,0.22));
+  }
+
+  .building-card__floors {
+    position: absolute;
+    inset: 0;
+  }
+
+  .building-floor-button {
+    position: absolute;
+    left: 50%;
+    width: 88px;
+    height: 58px;
+    transform: translateX(-50%);
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.12);
+    color: transparent;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .building-floor-button:hover {
+    background: rgba(255,193,91,0.45);
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  .building-floor-button[data-floor="12"] { top: 190px; }
+  .building-floor-button[data-floor="11"] { top: 270px; }
+  .building-floor-button[data-floor="8"] { top: 420px; }
+  .building-floor-button[data-floor="7"] { top: 500px; }
+
+  .floor-grid {
+    border: 2px solid #111111;
+    border-radius: 16px;
+    background: #a8adb8;
+    padding: 28px;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .floor-card {
+    min-height: 190px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    padding: 10px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    position: relative;
+  }
+
+  .floor-card__building {
+    display: none;
+  }
+
+  .floor-card strong {
+    position: absolute;
+    top: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 26px;
+    color: #111111;
+  }
+
+  .floor-card__map {
+    height: 170px;
+    border: 2px solid #111111;
+    border-radius: 0;
+    background: #ffffff;
+  }
+
+  .floor-card:hover {
+    background: rgba(255,255,255,0.16);
+  }
+
+  .floor-detail-card {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 28px;
+  }
+
+  .floor-preview {
+    min-height: 420px;
+  }
+
+  .floor-preview img {
+    min-height: 420px;
+  }
+
+  .floor-legend {
+    grid-template-columns: repeat(4, auto);
+    justify-content: center;
+    font-size: 16px;
+    gap: 24px;
+  }
+
+  .floor-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .map-bottom-nav {
+    display: none;
+  }
+}

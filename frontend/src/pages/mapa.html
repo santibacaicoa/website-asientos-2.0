@@ -1,9 +1,308 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+
+    <title>Mapa de oficina</title>
+
+    <link rel="stylesheet" href="./css/pages/mapa.css" />
   </head>
-  <body></body>
+
+  <body>
+    <main class="map-page">
+      <!-- =====================================================
+         SIDEBAR DESKTOP
+         Función:
+         - Navegación lateral en escritorio.
+         - Se oculta en mobile.
+    ====================================================== -->
+      <aside class="map-sidebar">
+        <button class="map-sidebar__avatar" type="button" aria-label="Perfil">
+          <img
+            class="user-avatar"
+            src="./assets/images/ui/avatar-default.png"
+            alt="Usuario"
+          />
+        </button>
+
+        <nav class="map-sidebar__nav" aria-label="Navegación desktop">
+          <a class="map-sidebar__link" href="./hub.html" aria-label="Hub">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M3 10.5L12 3l9 7.5v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"
+                fill="currentColor"
+              />
+            </svg>
+          </a>
+
+          <a
+            class="map-sidebar__link is-active"
+            href="./mapa.html"
+            aria-label="Mapa"
+          >
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2V6zM9 4v14M15 6v14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+          </a>
+
+          <a class="map-sidebar__link" href="./chat.html" aria-label="Chat">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M4 4h16v12H7l-3 3V4z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+          </a>
+        </nav>
+
+        <a class="map-sidebar__logo" href="./hub.html" aria-label="Inicio">
+          <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
+        </a>
+      </aside>
+
+      <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+      <section class="map-content">
+        <!-- =====================================================
+           HEADER MOBILE
+      ====================================================== -->
+        <header class="map-mobile-header">
+          <button
+            class="map-mobile-header__avatar"
+            type="button"
+            aria-label="Perfil"
+          >
+            <img
+              class="user-avatar"
+              src="./assets/images/ui/avatar-default.png"
+              alt="Usuario"
+            />
+          </button>
+
+          <a
+            class="map-mobile-header__logo"
+            href="./hub.html"
+            aria-label="Inicio"
+          >
+            <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
+          </a>
+        </header>
+
+        <!-- =====================================================
+           VISTA SELECCIÓN DE PISO
+      ====================================================== -->
+        <section class="floor-select-view" id="floorSelectView">
+          <h1 class="map-title">Selecciona el piso</h1>
+
+          <div class="map-layout">
+            <!-- Edificio animado -->
+            <div class="building-card">
+              <img
+                class="building-card__image"
+                src="./assets/images/ui/edificio.png"
+                alt="Edificio Assurant"
+              />
+
+              <div class="building-card__floors">
+                <button class="building-floor-button" data-floor="12">
+                  12
+                </button>
+                <button class="building-floor-button" data-floor="11">
+                  11
+                </button>
+                <button class="building-floor-button" data-floor="8">8</button>
+                <button class="building-floor-button" data-floor="7">7</button>
+              </div>
+            </div>
+
+            <!-- Cards mobile/desktop -->
+            <div class="floor-grid">
+              <button class="floor-card" data-floor="12">
+                <img
+                  class="floor-card__building"
+                  src="./assets/images/ui/edificio.png"
+                  alt="Edificio piso 12"
+                />
+                <strong>12</strong>
+                <img
+                  class="floor-card__map"
+                  src="./assets/images/ui/piso12.jpg"
+                  alt="Mapa piso 12"
+                />
+              </button>
+
+              <button class="floor-card" data-floor="8">
+                <img
+                  class="floor-card__building"
+                  src="./assets/images/ui/edificio.png"
+                  alt="Edificio piso 8"
+                />
+                <strong>8</strong>
+                <img
+                  class="floor-card__map"
+                  src="./assets/images/ui/piso8.jpg"
+                  alt="Mapa piso 8"
+                />
+              </button>
+
+              <button class="floor-card" data-floor="11">
+                <img
+                  class="floor-card__building"
+                  src="./assets/images/ui/edificio.png"
+                  alt="Edificio piso 11"
+                />
+                <strong>11</strong>
+                <img
+                  class="floor-card__map"
+                  src="./assets/images/ui/piso11.png"
+                  alt="Mapa piso 11"
+                />
+              </button>
+
+              <button class="floor-card" data-floor="7">
+                <img
+                  class="floor-card__building"
+                  src="./assets/images/ui/edificio.png"
+                  alt="Edificio piso 7"
+                />
+                <strong>7</strong>
+                <img
+                  class="floor-card__map"
+                  src="./assets/images/ui/piso7.jpg"
+                  alt="Mapa piso 7"
+                />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- =====================================================
+           VISTA DETALLE DE PISO
+      ====================================================== -->
+        <section class="floor-detail-view is-hidden" id="floorDetailView">
+          <div class="floor-detail-header">
+            <button class="back-to-floors" id="backToFloors" type="button">
+              ← Volver
+            </button>
+
+            <h1 class="map-title" id="floorDetailTitle">
+              Piso 12 - detalle de reserva
+            </h1>
+          </div>
+
+          <article class="floor-detail-card">
+            <div class="floor-preview">
+              <img
+                id="selectedFloorImage"
+                src="./assets/images/ui/piso12.jpg"
+                alt="Mapa del piso seleccionado"
+              />
+
+              <!-- Asientos mock visuales -->
+              <button
+                class="seat seat--free"
+                style="left: 24%; top: 52%"
+                data-seat="A1"
+              ></button>
+              <button
+                class="seat seat--occupied"
+                style="left: 32%; top: 52%"
+                data-seat="A2"
+              ></button>
+              <button
+                class="seat seat--half"
+                style="left: 40%; top: 52%"
+                data-seat="A3"
+              ></button>
+              <button
+                class="seat seat--outside"
+                style="left: 48%; top: 52%"
+                data-seat="A4"
+              ></button>
+            </div>
+
+            <div class="floor-legend">
+              <span><i class="dot dot--occupied"></i> Ocupado</span>
+              <span><i class="dot dot--free"></i> Libre</span>
+              <span><i class="dot dot--outside"></i> Fuera de tu pool</span>
+              <span><i class="dot dot--half"></i> Media jornada</span>
+            </div>
+
+            <div class="floor-actions">
+              <button class="floor-action floor-action--cancel" type="button">
+                Cancelar reserva
+              </button>
+              <button class="floor-action floor-action--confirm" type="button">
+                Confirmar reserva
+              </button>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <!-- =====================================================
+         BOTTOM NAV MOBILE
+    ====================================================== -->
+      <nav class="map-bottom-nav" aria-label="Navegación mobile">
+        <a class="map-bottom-nav__item" href="./hub.html" aria-label="Hub">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M3 10.5L12 3l9 7.5v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"
+              fill="currentColor"
+            />
+          </svg>
+        </a>
+
+        <a
+          class="map-bottom-nav__item is-active"
+          href="./mapa.html"
+          aria-label="Mapa"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2V6zM9 4v14M15 6v14"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+        </a>
+
+        <a class="map-bottom-nav__logo" href="./hub.html" aria-label="Inicio">
+          <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
+        </a>
+
+        <a class="map-bottom-nav__item" href="./chat.html" aria-label="Chat">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M4 4h16v12H7l-3 3V4z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+        </a>
+
+        <button class="map-bottom-nav__item" type="button" aria-label="Perfil">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.2 0-7 2.2-7 5v1h14v-1c0-2.8-2.8-5-7-5Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </nav>
+    </main>
+
+    <script type="module" src="./js/pages/mapa.js"></script>
+  </body>
 </html>
