@@ -14,22 +14,38 @@ const channels = {
     title: "#empleados",
     placeholder: "Escribe en #empleados...",
     messages: [
-      { name: "Oeniar", text: "Bienvenidos al canal de empleados.", mine: false },
-      { name: "Martín", text: "Hoy vamos a probar el sistema de reservas.", mine: false },
+      {
+        name: "Bot Assurant",
+        text: "Bienvenidos al canal de empleados. Acá podrán comunicarse empleados y supervisores.",
+        mine: false,
+        bot: true,
+      },
     ],
   },
+
   supervisores: {
     title: "#supervisores",
     placeholder: "Escribe en #supervisores...",
     messages: [
-      { name: "Pierina", text: "Canal interno para supervisores.", mine: false },
+      {
+        name: "Bot Assurant",
+        text: "Bienvenidos al canal de supervisores. Este espacio estará reservado para coordinación interna.",
+        mine: false,
+        bot: true,
+      },
     ],
   },
+
   avisos: {
     title: "#avisos",
     placeholder: "Escribe en #avisos...",
     messages: [
-      { name: "Admin", text: "Los avisos importantes aparecerán acá.", mine: false },
+      {
+        name: "Bot Assurant",
+        text: "Bienvenidos al canal de avisos. Acá aparecerán comunicados importantes para todos.",
+        mine: false,
+        bot: true,
+      },
     ],
   },
 };
@@ -81,7 +97,7 @@ function renderMessages() {
       ? `<div class="message__bubble">${message.text}</div>`
       : `
         <div class="message__avatar">
-          <img src="${DEFAULT_AVATAR}" alt="${message.name}" />
+          <img src="${message.bot ? "./assets/images/ui/logo-assurant.png" : DEFAULT_AVATAR}" alt="${message.name}" />
         </div>
         <div>
           <p class="message__name">${message.name}</p>
