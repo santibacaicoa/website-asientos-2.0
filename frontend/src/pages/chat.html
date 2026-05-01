@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat - Website Asientos</title>
+    <link rel="stylesheet" href="./css/pages/chat.css" />
+  </head>
+
+  <body>
+    <main class="chat-page">
+      <aside class="chat-sidebar">
+        <div class="chat-profile-menu">
+          <button
+            class="chat-sidebar__avatar"
+            id="profileMenuButtonDesktop"
+            type="button"
+          >
+            <img
+              class="user-avatar"
+              src="./assets/images/ui/avatar-default.png"
+              alt="Usuario"
+            />
+          </button>
+
+          <div class="chat-profile-dropdown" id="profileDropdownDesktop">
+            <button type="button" class="changePhotoBtn">Cambiar foto</button>
+            <a href="./forgot-password.html">Cambiar contraseña</a>
+            <button type="button" class="logoutAction">Cerrar sesión</button>
+          </div>
+        </div>
+
+        <nav class="chat-sidebar__nav">
+          <a class="chat-sidebar__link" href="./hub.html">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M3 10.5L12 3l9 7.5v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"
+                fill="currentColor"
+              />
+            </svg>
+          </a>
+
+          <a class="chat-sidebar__link" href="./mapa.html">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 22s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"
+                fill="currentColor"
+              />
+              <circle cx="12" cy="11" r="2.5" fill="white" />
+            </svg>
+          </a>
+
+          <a class="chat-sidebar__link is-active" href="./chat.html">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 4h16v12H7l-3 3V4z" fill="currentColor" />
+            </svg>
+          </a>
+        </nav>
+
+        <a class="chat-sidebar__logo" href="./hub.html">
+          <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
+        </a>
+      </aside>
+
+      <section class="chat-content">
+        <header class="chat-mobile-header">
+          <button
+            class="chat-mobile-header__avatar"
+            id="profileMenuButtonMobile"
+            type="button"
+          >
+            <img
+              class="user-avatar"
+              src="./assets/images/ui/avatar-default.png"
+              alt="Usuario"
+            />
+          </button>
+
+          <img
+            class="chat-mobile-header__logo"
+            src="./assets/images/ui/logo-assurant.png"
+            alt="Assurant"
+          />
+
+          <button class="chat-mobile-header__menu" type="button">⋮</button>
+
+          <div class="chat-profile-dropdown" id="profileDropdownMobile">
+            <button type="button" class="changePhotoBtn">Cambiar foto</button>
+            <a href="./forgot-password.html">Cambiar contraseña</a>
+            <button type="button" class="logoutAction">Cerrar sesión</button>
+          </div>
+        </header>
+
+        <aside class="chat-channels">
+          <h1>Canales</h1>
+
+          <button class="channel-card is-active" data-channel="empleados">
+            <span class="channel-icon">👤</span>
+            <span>
+              <strong>Empleados</strong>
+              <small>Empleados y supervisores</small>
+            </span>
+          </button>
+
+          <button class="channel-card" data-channel="supervisores">
+            <span class="channel-icon">🛡️</span>
+            <span>
+              <strong>Supervisores</strong>
+              <small>Solo supervisores</small>
+            </span>
+          </button>
+
+          <button class="channel-card" data-channel="avisos">
+            <span class="channel-icon">📣</span>
+            <span>
+              <strong>Avisos</strong>
+              <small>Avisos para todos</small>
+            </span>
+          </button>
+        </aside>
+
+        <section class="chat-panel">
+          <header class="chat-panel__header">
+            <h2 id="activeChannelTitle">#empleados</h2>
+          </header>
+
+          <div class="chat-messages" id="chatMessages"></div>
+
+          <form class="chat-input-bar" id="chatForm">
+            <input
+              id="chatInput"
+              type="text"
+              placeholder="Escribe en #empleados..."
+              autocomplete="off"
+            />
+            <button type="submit" aria-label="Enviar">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M3 11l18-8-8 18-2-7-8-3z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </button>
+          </form>
+        </section>
+      </section>
+
+      <nav class="chat-bottom-nav">
+        <a
+          class="chat-bottom-nav__item chat-bottom-nav__item--home"
+          href="./hub.html"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M3 10.5L12 3l9 7.5v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"
+              fill="currentColor"
+            />
+          </svg>
+        </a>
+
+        <a
+          class="chat-bottom-nav__item chat-bottom-nav__item--map"
+          href="./mapa.html"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 22s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"
+              fill="currentColor"
+            />
+            <circle cx="12" cy="11" r="2.5" fill="white" />
+          </svg>
+        </a>
+
+        <a class="chat-bottom-nav__logo" href="./hub.html">
+          <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
+        </a>
+
+        <a
+          class="chat-bottom-nav__item chat-bottom-nav__item--chat is-active"
+          href="./chat.html"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M4 4h16v12H7l-3 3V4z" fill="currentColor" />
+          </svg>
+        </a>
+
+        <button
+          class="chat-bottom-nav__item chat-bottom-nav__item--profile"
+          id="profileMenuButtonBottom"
+          type="button"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.2 0-7 2.2-7 5v1h14v-1c0-2.8-2.8-5-7-5Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </nav>
+    </main>
+
+    <input type="file" id="photoInput" accept="image/*" style="display: none" />
+    <script type="module" src="./js/pages/chat.js"></script>
+  </body>
+</html>
