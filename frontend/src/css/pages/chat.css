@@ -276,6 +276,13 @@ body {
   justify-content: center;
 }
 
+.chat-bottom-nav__logo--empty {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+
 .chat-bottom-nav__logo img {
   width: 52px;
   height: 52px;
