@@ -92,33 +92,55 @@
         </header>
 
         <aside class="chat-channels">
-          <h1>Canales</h1>
+          <h1>Chat</h1>
 
-          <button class="channel-card is-active" data-channel="empleados">
-            <span class="channel-icon">👤</span>
-            <span>
-              <strong>Empleados</strong>
-              <small>Empleados y supervisores</small>
-            </span>
-          </button>
+          <div class="chat-channel-select">
+            <button
+              class="chat-channel-select__button"
+              id="channelSelectButton"
+              type="button"
+            >
+              <span
+                >Canal: <strong id="channelSelectLabel">Empleados</strong></span
+              >
+              <span class="chat-channel-select__arrow">⌄</span>
+            </button>
 
-          <button class="channel-card" data-channel="supervisores">
-            <span class="channel-icon">🛡️</span>
-            <span>
-              <strong>Supervisores</strong>
-              <small>Solo supervisores</small>
-            </span>
-          </button>
+            <div class="chat-channel-select__menu" id="channelSelectMenu">
+              <button
+                class="channel-card is-active"
+                data-channel="empleados"
+                type="button"
+              >
+                <span class="channel-icon">👤</span>
+                <span>
+                  <strong>Empleados</strong>
+                  <small>Empleados y supervisores</small>
+                </span>
+              </button>
 
-          <button class="channel-card" data-channel="avisos">
-            <span class="channel-icon">📣</span>
-            <span>
-              <strong>Avisos</strong>
-              <small>Avisos para todos</small>
-            </span>
-          </button>
+              <button
+                class="channel-card"
+                data-channel="supervisores"
+                type="button"
+              >
+                <span class="channel-icon">🛡️</span>
+                <span>
+                  <strong>Supervisores</strong>
+                  <small>Solo supervisores</small>
+                </span>
+              </button>
+
+              <button class="channel-card" data-channel="avisos" type="button">
+                <span class="channel-icon">📣</span>
+                <span>
+                  <strong>Avisos</strong>
+                  <small>Avisos para todos</small>
+                </span>
+              </button>
+            </div>
+          </div>
         </aside>
-
         <section class="chat-panel">
           <header class="chat-panel__header">
             <h2 id="activeChannelTitle">#empleados</h2>

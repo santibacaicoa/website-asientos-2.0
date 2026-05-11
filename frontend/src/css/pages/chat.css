@@ -647,3 +647,137 @@ body {
     justify-content: center;
   }
 }
+
+/* =========================================================
+   CHAT MOBILE - SELECTOR DESPLEGABLE DE CANALES
+   Función:
+   - Reemplaza el carrusel por un menú desplegable.
+   - Mantiene desktop sin romper.
+========================================================= */
+
+@media (max-width: 899px) {
+  .chat-channels {
+    display: block;
+    width: 100%;
+    padding: 18px 16px 16px;
+    background: linear-gradient(135deg, #00455f, #006597);
+    color: #ffffff;
+    overflow: visible;
+  }
+
+  .chat-channels h1 {
+    margin: 0 0 14px;
+    font-size: 28px;
+    font-weight: 400;
+  }
+
+  .chat-channel-select {
+    position: relative;
+    width: 100%;
+  }
+
+  .chat-channel-select__button {
+    width: 100%;
+    min-height: 54px;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    padding: 0 18px;
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .chat-channel-select__button strong {
+    font-weight: 700;
+  }
+
+  .chat-channel-select__arrow {
+    font-size: 24px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+  }
+
+  .chat-channel-select.is-open .chat-channel-select__arrow {
+    transform: rotate(180deg);
+  }
+
+  .chat-channel-select__menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 10px);
+    padding: 10px;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+    display: none;
+    z-index: 120;
+  }
+
+  .chat-channel-select.is-open .chat-channel-select__menu {
+    display: grid;
+    gap: 8px;
+  }
+
+  .chat-channel-select .channel-card {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    min-height: 62px;
+    border: 0;
+    border-radius: 14px;
+    padding: 10px 12px;
+    background: transparent;
+    color: #111111;
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    align-items: center;
+    justify-items: start;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .chat-channel-select .channel-card:hover,
+  .chat-channel-select .channel-card.is-active {
+    background: #eef3f5;
+    outline: none;
+    transform: none;
+  }
+
+  .chat-channel-select .channel-icon {
+    font-size: 26px;
+  }
+
+  .chat-channel-select .channel-card strong {
+    font-size: 16px;
+    color: #111111;
+  }
+
+  .chat-channel-select .channel-card small {
+    font-size: 12px;
+    color: #666666;
+  }
+
+  .chat-panel {
+    min-height: calc(100dvh - 104px - 130px - 142px);
+  }
+}
+
+/* En desktop mantenemos la lista lateral normal */
+@media (min-width: 900px) {
+  .chat-channel-select {
+    display: contents;
+  }
+
+  .chat-channel-select__button {
+    display: none;
+  }
+
+  .chat-channel-select__menu {
+    display: contents;
+  }
+}

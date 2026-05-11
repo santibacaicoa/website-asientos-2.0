@@ -56,6 +56,9 @@ const chatMessages = document.getElementById("chatMessages");
 const chatForm = document.getElementById("chatForm");
 const chatInput = document.getElementById("chatInput");
 const activeChannelTitle = document.getElementById("activeChannelTitle");
+const channelSelect = document.querySelector(".chat-channel-select");
+const channelSelectButton = document.getElementById("channelSelectButton");
+const channelSelectLabel = document.getElementById("channelSelectLabel");
 
 function updateUIPhoto(photo) {
   document.querySelectorAll(".user-avatar").forEach((img) => {
@@ -113,6 +116,25 @@ function renderMessages() {
 
 document.querySelectorAll(".channel-card").forEach((button) => {
   button.addEventListener("click", () => {
+document.querySelectorAll(".channel-card").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".channel-card").forEach((item) => {
+      item.classList.remove("is-active");
+    });
+
+    button.classList.add("is-active");
+    activeChannel = button.dataset.channel;
+
+    if (channelSelectLabel) {
+      channelSelectLabel.textContent = button.querySelector("strong").textContent;
+    }
+
+    channelSelect?.classList.remove("is-open");
+
+    renderMessages();
+  });
+});
+
     document.querySelectorAll(".channel-card").forEach((item) => {
       item.classList.remove("is-active");
     });
@@ -121,6 +143,19 @@ document.querySelectorAll(".channel-card").forEach((button) => {
     activeChannel = button.dataset.channel;
     renderMessages();
   });
+});
+
+channelSelectButton?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  channelSelect?.classList.toggle("is-open");
+});
+
+document.addEventListener("click", () => {
+  channelSelect?.classList.remove("is-open");
+});
+
+channelSelect?.addEventListener("click", (event) => {
+  event.stopPropagation();
 });
 
 chatForm?.addEventListener("submit", (event) => {
