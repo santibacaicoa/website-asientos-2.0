@@ -25,7 +25,7 @@ const channelInfo = {
     label: "Procesadores",
     title: "#procesadores",
     placeholder: "Escribe en #procesadores...",
-    icon: "🧑‍💻",
+    icon: "🧑",
     description: "Procesadores y supervisores",
   },
 
