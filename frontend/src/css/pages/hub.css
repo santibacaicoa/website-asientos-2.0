@@ -132,6 +132,11 @@ body {
   position: relative;
 }
 
+.hub-profile-menu--mobile-top {
+  display: flex;
+  align-items: center;
+}
+
 .hub-profile-button {
   width: 52px;
   height: 52px;

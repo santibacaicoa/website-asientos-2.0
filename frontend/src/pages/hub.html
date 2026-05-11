@@ -81,30 +81,7 @@
              - Logo, fecha/hora y avatar para mobile.
         ====================================================== -->
         <header class="hub-mobile-header">
-          <a class="hub-mobile-header__logo" href="./hub.html">
-            <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
-          </a>
-
-          <div class="hub-mobile-header__datetime" id="currentDateTimeMobile">
-            --
-          </div>
-        </header>
-
-        <!-- =====================================================
-             HEADER DESKTOP / SALUDO
-             Función:
-             - Muestra fecha y saludo.
-             - El nombre viene desde localStorage.
-        ====================================================== -->
-        <section class="hub-hero-header">
-          <div>
-            <p class="hub-date" id="currentDateTimeDesktop">--</p>
-            <h1 class="hub-title">
-              Hola, <span id="userFirstName">Usuario</span>!
-            </h1>
-          </div>
-
-          <div class="hub-profile-menu">
+          <div class="hub-profile-menu hub-profile-menu--mobile-top">
             <button
               class="hub-profile-button"
               id="profileMenuButtonMobile"
@@ -126,6 +103,25 @@
               <a href="./forgot-password.html">Cambiar contraseña</a>
               <button type="button" class="logoutAction">Cerrar sesión</button>
             </div>
+          </div>
+
+          <div class="hub-mobile-header__datetime" id="currentDateTimeMobile">
+            --
+          </div>
+        </header>
+
+        <!-- =====================================================
+             HEADER DESKTOP / SALUDO
+             Función:
+             - Muestra fecha y saludo.
+             - El nombre viene desde localStorage.
+        ====================================================== -->
+        <section class="hub-hero-header">
+          <div>
+            <p class="hub-date" id="currentDateTimeDesktop">--</p>
+            <h1 class="hub-title">
+              Hola, <span id="userFirstName">Usuario</span>!
+            </h1>
           </div>
         </section>
 
