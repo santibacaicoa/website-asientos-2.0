@@ -1,3 +1,7 @@
+/* =========================================================
+   1. RESET GENERAL
+========================================================= */
+
 * {
   box-sizing: border-box;
 }
@@ -12,23 +16,29 @@ body {
 body {
   font-family: Arial, Helvetica, sans-serif;
   color: #111111;
-  background: #f7f7f7;
+  background: #eef2f3;
 }
+
+/* =========================================================
+   2. BASE GENERAL
+========================================================= */
 
 .chat-page {
   min-height: 100dvh;
   padding-bottom: 142px;
-  background: #f7f7f7;
-}
-
-.chat-sidebar {
-  display: none;
+  background: #eef2f3;
 }
 
 .chat-content {
   width: 100%;
   max-width: 430px;
+  min-height: 100dvh;
   margin: 0 auto;
+  background: #eef2f3;
+}
+
+.chat-sidebar {
+  display: none;
 }
 
 .user-avatar {
@@ -40,14 +50,15 @@ body {
   background: #ffffff;
 }
 
+/* =========================================================
+   3. HEADER MOBILE LEGACY
+   Nota:
+   - El chat mobile actual NO usa top nav.
+   - Se conserva oculto por si luego lo reutilizamos.
+========================================================= */
+
 .chat-mobile-header {
-  height: 122px;
-  padding: 34px 16px 18px;
-  display: grid;
-  grid-template-columns: 54px 1fr 54px;
-  align-items: center;
-  background: #ffffff;
-  position: relative;
+  display: none;
 }
 
 .chat-mobile-header__avatar,
@@ -72,65 +83,132 @@ body {
   line-height: 1;
 }
 
+/* =========================================================
+   4. SELECTOR DE CANALES MOBILE
+========================================================= */
+
 .chat-channels {
-  padding: 18px 14px 20px;
-  background: linear-gradient(135deg, #00455f, #006597);
+  width: 100%;
+  padding: 22px 18px 16px;
+  background: #07586f;
   color: #ffffff;
-  overflow-x: auto;
-  display: grid;
-  grid-template-columns: repeat(3, 170px);
-  gap: 14px;
 }
 
 .chat-channels h1 {
-  grid-column: 1 / -1;
-  margin: 0;
-  font-size: 27px;
-  font-weight: 400;
+  margin: 0 0 14px;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.chat-channel-select {
+  position: relative;
+  width: 100%;
+}
+
+.chat-channel-select__button {
+  width: 100%;
+  min-height: 54px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 16px;
+  padding: 0 18px;
+  background: #2f7890;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.chat-channel-select__button:hover {
+  background: #286e84;
+}
+
+.chat-channel-select__button strong {
+  font-weight: 700;
+}
+
+.chat-channel-select__arrow {
+  font-size: 24px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.chat-channel-select.is-open .chat-channel-select__arrow {
+  transform: rotate(180deg);
+}
+
+.chat-channel-select__menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  padding: 10px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+  display: none;
+  z-index: 120;
+}
+
+.chat-channel-select.is-open .chat-channel-select__menu {
+  display: grid;
+  gap: 8px;
 }
 
 .channel-card {
-  min-height: 126px;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  min-height: 62px;
   border: 0;
-  border-radius: 18px;
-  padding: 14px;
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: transparent;
+  color: #111111;
+  display: grid;
+  grid-template-columns: 42px 1fr;
   align-items: center;
-  gap: 8px;
-  transition: transform 0.2s ease, background 0.2s ease;
+  justify-items: start;
+  gap: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .channel-card:hover,
 .channel-card.is-active {
-  background: #006597;
-  transform: translateY(-2px);
+  background: #eef3f5;
 }
 
 .channel-icon {
-  font-size: 34px;
+  font-size: 26px;
 }
 
 .channel-card strong {
   display: block;
-  font-size: 22px;
-  font-weight: 400;
+  font-size: 16px;
+  color: #111111;
 }
 
 .channel-card small {
   display: block;
   font-size: 12px;
+  color: #666666;
 }
 
+/* =========================================================
+   5. PANEL DEL CHAT
+========================================================= */
+
 .chat-panel {
-  min-height: calc(100dvh - 122px - 186px - 142px);
+  min-height: calc(100dvh - 118px - 142px);
   display: flex;
   flex-direction: column;
-  background: #eef3f5;
+  background: #eef2f3;
 }
 
 .chat-panel__header {
@@ -139,14 +217,18 @@ body {
 
 .chat-messages {
   flex: 1;
-  padding: 28px 14px;
+  padding: 24px 18px;
   overflow-y: auto;
 }
+
+/* =========================================================
+   6. MENSAJES
+========================================================= */
 
 .message {
   display: grid;
   grid-template-columns: 44px 1fr;
-  gap: 16px;
+  gap: 12px;
   margin-bottom: 22px;
 }
 
@@ -170,25 +252,32 @@ body {
 }
 
 .message__name {
-  margin: 0 0 8px;
-  font-size: 20px;
+  margin: 0 0 7px;
+  font-size: 17px;
   color: #555555;
 }
 
 .message__bubble {
-  max-width: 330px;
-  min-height: 58px;
-  padding: 14px 18px;
-  border-radius: 0 22px 22px 22px;
+  max-width: 285px;
+  min-height: auto;
+  padding: 13px 16px;
+  border-radius: 18px 18px 18px 4px;
   background: #ffffff;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+  font-size: 15px;
+  line-height: 1.35;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
 }
 
 .message--mine .message__bubble {
-  border-radius: 22px 0 22px 22px;
-  background: #00455f;
+  max-width: 285px;
+  border-radius: 18px 18px 4px 18px;
+  background: #07586f;
   color: #ffffff;
 }
+
+/* =========================================================
+   7. INPUT DE CHAT
+========================================================= */
 
 .chat-input-bar {
   position: fixed;
@@ -197,9 +286,9 @@ body {
   bottom: 72px;
   height: 70px;
   background: #ffffff;
-  border-top: 1.5px solid #bdbdbd;
+  border-top: 1px solid #c9c9c9;
   display: grid;
-  grid-template-columns: 1fr 54px;
+  grid-template-columns: 1fr 52px;
   gap: 10px;
   padding: 10px 14px;
   z-index: 80;
@@ -207,10 +296,12 @@ body {
 
 .chat-input-bar input {
   width: 100%;
-  border: 1.5px solid #999999;
-  border-radius: 18px;
+  height: 50px;
+  border: 1.5px solid #9d9d9d;
+  border-radius: 16px;
   padding: 0 18px;
-  font-size: 18px;
+  background: #ffffff;
+  font-size: 16px;
   outline: none;
 }
 
@@ -219,12 +310,21 @@ body {
   background: transparent;
   cursor: pointer;
   color: #111111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chat-input-bar svg {
   width: 34px;
   height: 34px;
 }
+
+/* =========================================================
+   8. BOTTOM NAV MOBILE
+   Nota:
+   - Chat usa 4 iconos, sin logo central.
+========================================================= */
 
 .chat-bottom-nav {
   position: fixed;
@@ -235,7 +335,7 @@ body {
   border-top: 1.5px solid #bdbdbd;
   background: #ffffff;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: center;
   z-index: 90;
 }
@@ -244,13 +344,36 @@ body {
   width: 100%;
   height: 72px;
   border: 0;
+  padding: 0;
   background: transparent;
   color: #555555;
+  text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.chat-bottom-nav__item--home {
+  grid-column: 1;
+}
+
+.chat-bottom-nav__item--map {
+  grid-column: 2;
+}
+
+.chat-bottom-nav__item--chat {
+  grid-column: 3;
+}
+
+.chat-bottom-nav__item--profile {
+  grid-column: 4;
+}
+
+.chat-bottom-nav__item:hover {
+  background: #d6d6d6;
+  color: #111111;
 }
 
 .chat-bottom-nav__item.is-active {
@@ -260,34 +383,12 @@ body {
 .chat-bottom-nav__item svg {
   width: 26px;
   height: 26px;
+  display: block;
 }
 
-.chat-bottom-nav__logo {
-  justify-self: center;
-  position: relative;
-  top: -18px;
-  width: 68px;
-  height: 68px;
-  border-radius: 999px;
-  background: #ffffff;
-  border: 1.5px solid #d0d0d0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.chat-bottom-nav__logo--empty {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  pointer-events: none;
-}
-
-.chat-bottom-nav__logo img {
-  width: 52px;
-  height: 52px;
-  object-fit: contain;
-}
+/* =========================================================
+   9. MENÚ DE PERFIL
+========================================================= */
 
 .chat-profile-menu {
   position: relative;
@@ -335,12 +436,17 @@ body {
   background: #eeeeee;
 }
 
+/* =========================================================
+   10. DESKTOP
+========================================================= */
+
 @media (min-width: 900px) {
   .chat-page {
+    min-height: 100dvh;
     padding-bottom: 0;
     display: grid;
     grid-template-columns: 126px 220px 1fr;
-    min-height: 100dvh;
+    background: #f7f7f7;
   }
 
   .chat-sidebar {
@@ -384,7 +490,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease,
+      transform 0.2s ease;
   }
 
   .chat-sidebar__link:hover,
@@ -413,13 +520,10 @@ body {
   .chat-content {
     grid-column: 2 / 4;
     max-width: none;
+    min-height: 100dvh;
     display: grid;
     grid-template-columns: 220px 1fr;
-    min-height: 100dvh;
-  }
-
-  .chat-mobile-header {
-    display: none;
+    background: #f5f5f5;
   }
 
   .chat-channels {
@@ -436,13 +540,27 @@ body {
   .chat-channels h1 {
     color: #aaaaaa;
     font-size: 20px;
+    font-weight: 400;
     margin-bottom: 36px;
+  }
+
+  .chat-channel-select {
+    display: contents;
+  }
+
+  .chat-channel-select__button {
+    display: none;
+  }
+
+  .chat-channel-select__menu {
+    display: contents;
   }
 
   .channel-card {
     min-height: 56px;
     width: 180px;
     border-radius: 12px;
+    padding: 10px 12px;
     color: #111111;
     background: transparent;
     display: grid;
@@ -451,8 +569,16 @@ body {
     align-items: center;
   }
 
+  .channel-card:hover,
   .channel-card.is-active {
     background: #006597;
+    color: #ffffff;
+  }
+
+  .channel-card:hover strong,
+  .channel-card:hover small,
+  .channel-card.is-active strong,
+  .channel-card.is-active small {
     color: #ffffff;
   }
 
@@ -492,6 +618,14 @@ body {
     padding: 28px 32px;
   }
 
+  .message__bubble {
+    max-width: 520px;
+  }
+
+  .message--mine .message__bubble {
+    max-width: 520px;
+  }
+
   .chat-input-bar {
     position: static;
     height: 88px;
@@ -510,316 +644,4 @@ body {
     right: auto;
     bottom: auto;
   }
-}
-
-/* =========================================================
-   FIX MOBILE CHAT
-   Función:
-   - Mejora el diseño mobile.
-   - Evita que los canales se corten.
-   - Hace el chat más limpio para demo.
-========================================================= */
-
-@media (max-width: 899px) {
-  .chat-page {
-    padding-bottom: 142px;
-    background: #eef3f5;
-  }
-
-  .chat-content {
-    max-width: 430px;
-    min-height: 100dvh;
-    background: #eef3f5;
-  }
-
-  .chat-mobile-header {
-    height: 104px;
-    padding: 26px 16px 14px;
-    background: #ffffff;
-    border-bottom: 1px solid #e2e2e2;
-  }
-
-  .chat-mobile-header__logo {
-    width: 58px;
-    height: 58px;
-  }
-
-  .chat-channels {
-    width: 100%;
-    padding: 18px 14px 20px;
-    background: linear-gradient(135deg, #00455f, #006597);
-    display: flex;
-    gap: 14px;
-    overflow-x: auto;
-    color: #ffffff;
-    scroll-snap-type: x mandatory;
-  }
-
-  .chat-channels::-webkit-scrollbar {
-    display: none;
-  }
-
-  .chat-channels h1 {
-    position: sticky;
-    left: 0;
-    min-width: 120px;
-    margin: 0;
-    font-size: 26px;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-  }
-
-  .channel-card {
-    min-width: 150px;
-    max-width: 150px;
-    min-height: 116px;
-    border-radius: 18px;
-    padding: 14px 10px;
-    background: rgba(255, 255, 255, 0.18);
-    color: #ffffff;
-    scroll-snap-align: start;
-  }
-
-  .channel-card.is-active {
-    background: rgba(255, 255, 255, 0.28);
-    outline: 2px solid rgba(255, 255, 255, 0.45);
-  }
-
-  .channel-icon {
-    font-size: 31px;
-  }
-
-  .channel-card strong {
-    font-size: 19px;
-    line-height: 1.1;
-  }
-
-  .channel-card small {
-    font-size: 11px;
-    line-height: 1.15;
-  }
-
-  .chat-panel {
-    min-height: calc(100dvh - 104px - 154px - 142px);
-    background: #eef3f5;
-  }
-
-  .chat-messages {
-    padding: 24px 16px 18px;
-  }
-
-  .message {
-    grid-template-columns: 42px 1fr;
-    gap: 12px;
-    margin-bottom: 22px;
-  }
-
-  .message__avatar {
-    width: 42px;
-    height: 42px;
-  }
-
-  .message__name {
-    font-size: 17px;
-    margin-bottom: 7px;
-  }
-
-  .message__bubble {
-    max-width: 285px;
-    min-height: auto;
-    padding: 13px 16px;
-    font-size: 15px;
-    line-height: 1.35;
-  }
-
-  .message--mine .message__bubble {
-    max-width: 285px;
-  }
-
-  .chat-input-bar {
-    height: 70px;
-    padding: 10px 14px;
-    grid-template-columns: 1fr 52px;
-  }
-
-  .chat-input-bar input {
-    height: 50px;
-    font-size: 16px;
-  }
-
-  .chat-input-bar button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-/* =========================================================
-   CHAT MOBILE - SELECTOR DESPLEGABLE DE CANALES
-   Función:
-   - Reemplaza el carrusel por un menú desplegable.
-   - Mantiene desktop sin romper.
-========================================================= */
-
-@media (max-width: 899px) {
-  .chat-channels {
-    display: block;
-    width: 100%;
-    padding: 18px 16px 16px;
-    background: linear-gradient(135deg, #00455f, #006597);
-    color: #ffffff;
-    overflow: visible;
-  }
-
-  .chat-channels h1 {
-    margin: 0 0 14px;
-    font-size: 28px;
-    font-weight: 400;
-  }
-
-  .chat-channel-select {
-    position: relative;
-    width: 100%;
-  }
-
-  .chat-channel-select__button {
-    width: 100%;
-    min-height: 54px;
-    border: 1.5px solid rgba(255, 255, 255, 0.35);
-    border-radius: 999px;
-    padding: 0 18px;
-    background: rgba(255, 255, 255, 0.16);
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  .chat-channel-select__button strong {
-    font-weight: 700;
-  }
-
-  .chat-channel-select__arrow {
-    font-size: 24px;
-    line-height: 1;
-    transition: transform 0.2s ease;
-  }
-
-  .chat-channel-select.is-open .chat-channel-select__arrow {
-    transform: rotate(180deg);
-  }
-
-  .chat-channel-select__menu {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(100% + 10px);
-    padding: 10px;
-    border-radius: 20px;
-    background: #ffffff;
-    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
-    display: none;
-    z-index: 120;
-  }
-
-  .chat-channel-select.is-open .chat-channel-select__menu {
-    display: grid;
-    gap: 8px;
-  }
-
-  .chat-channel-select .channel-card {
-    width: 100%;
-    min-width: 0;
-    max-width: none;
-    min-height: 62px;
-    border: 0;
-    border-radius: 14px;
-    padding: 10px 12px;
-    background: transparent;
-    color: #111111;
-    display: grid;
-    grid-template-columns: 42px 1fr;
-    align-items: center;
-    justify-items: start;
-    gap: 10px;
-    text-align: left;
-  }
-
-  .chat-channel-select .channel-card:hover,
-  .chat-channel-select .channel-card.is-active {
-    background: #eef3f5;
-    outline: none;
-    transform: none;
-  }
-
-  .chat-channel-select .channel-icon {
-    font-size: 26px;
-  }
-
-  .chat-channel-select .channel-card strong {
-    font-size: 16px;
-    color: #111111;
-  }
-
-  .chat-channel-select .channel-card small {
-    font-size: 12px;
-    color: #666666;
-  }
-
-  .chat-panel {
-    min-height: calc(100dvh - 104px - 130px - 142px);
-  }
-}
-
-/* En desktop mantenemos la lista lateral normal */
-@media (min-width: 900px) {
-  .chat-channel-select {
-    display: contents;
-  }
-
-  .chat-channel-select__button {
-    display: none;
-  }
-
-  .chat-channel-select__menu {
-    display: contents;
-  }
-}
-
-/* =========================================================
-   FIX BOTTOM NAV CHAT SIN LOGO CENTRAL
-   Función:
-   - Centra los 4 iconos del bottom nav.
-   - Mantiene separación equilibrada.
-========================================================= */
-
-.chat-bottom-nav {
-  grid-template-columns: repeat(4, 1fr);
-}
-
-.chat-bottom-nav__item {
-  padding: 0;
-}
-
-.chat-bottom-nav__item svg {
-  display: block;
-}
-
-.chat-bottom-nav__item--home {
-  grid-column: 1;
-}
-
-.chat-bottom-nav__item--map {
-  grid-column: 2;
-}
-
-.chat-bottom-nav__item--chat {
-  grid-column: 3;
-}
-
-.chat-bottom-nav__item--profile {
-  grid-column: 4;
 }
