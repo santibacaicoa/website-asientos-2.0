@@ -56,7 +56,15 @@ function updateUIPhoto(photo) {
   const avatars = document.querySelectorAll(".user-avatar");
 
   avatars.forEach((img) => {
-    img.src = photo || DEFAULT_AVATAR;
+    img.classList.add("is-updating");
+
+    setTimeout(() => {
+      img.src = photo || DEFAULT_AVATAR;
+
+      img.onload = () => {
+        img.classList.remove("is-updating");
+      };
+    }, 120);
   });
 }
 
@@ -305,7 +313,6 @@ function drawPhotoPreview() {
   photoCropCtx.save();
 
   photoCropCtx.beginPath();
-
   photoCropCtx.arc(
     canvasSize / 2,
     canvasSize / 2,
@@ -313,24 +320,29 @@ function drawPhotoPreview() {
     0,
     Math.PI * 2
   );
-
   photoCropCtx.clip();
 
-  const baseScale = Math.max(
-    canvasSize / imageWidth,
-    canvasSize / imageHeight
-  );
-
+  const baseScale = Math.max(canvasSize / imageWidth, canvasSize / imageHeight);
   const finalScale = baseScale * selectedPhotoZoom;
 
   const drawWidth = imageWidth * finalScale;
   const drawHeight = imageHeight * finalScale;
 
-  const drawX =
-    (canvasSize - drawWidth) / 2 + selectedPhotoOffsetX;
+  const maxOffsetX = Math.max(0, (drawWidth - canvasSize) / 2);
+  const maxOffsetY = Math.max(0, (drawHeight - canvasSize) / 2);
 
-  const drawY =
-    (canvasSize - drawHeight) / 2 + selectedPhotoOffsetY;
+  selectedPhotoOffsetX = Math.min(
+    maxOffsetX,
+    Math.max(-maxOffsetX, selectedPhotoOffsetX)
+  );
+
+  selectedPhotoOffsetY = Math.min(
+    maxOffsetY,
+    Math.max(-maxOffsetY, selectedPhotoOffsetY)
+  );
+
+  const drawX = (canvasSize - drawWidth) / 2 + selectedPhotoOffsetX;
+  const drawY = (canvasSize - drawHeight) / 2 + selectedPhotoOffsetY;
 
   photoCropCtx.drawImage(
     selectedPhotoImage,
@@ -363,10 +375,20 @@ function loadImageFromFile(file) {
   });
 }
 
-function getCroppedPhotoBase64(quality = 0.82) {
+function getCroppedPhotoBase64(quality = 0.78) {
   if (!photoCropCanvas) return null;
 
-  return photoCropCanvas.toDataURL("image/jpeg", quality);
+  const outputCanvas = document.createElement("canvas");
+  const outputSize = 480;
+
+  outputCanvas.width = outputSize;
+  outputCanvas.height = outputSize;
+
+  const outputCtx = outputCanvas.getContext("2d");
+
+  outputCtx.drawImage(photoCropCanvas, 0, 0, outputSize, outputSize);
+
+  return outputCanvas.toDataURL("image/jpeg", quality);
 }
 
 async function uploadProfilePhoto(base64Photo) {
@@ -536,7 +558,8 @@ photoCropSave?.addEventListener("click", async () => {
 
   try {
     photoCropSave.disabled = true;
-    photoCropSave.textContent = "Guardando...";
+photoCropSave.classList.add("is-loading");
+photoCropSave.textContent = "Guardando...";
 
     const data = await uploadProfilePhoto(base64);
 
@@ -555,6 +578,7 @@ photoCropSave?.addEventListener("click", async () => {
     console.error("Error subiendo foto:", error);
   } finally {
     photoCropSave.disabled = false;
-    photoCropSave.textContent = "Guardar";
+photoCropSave.classList.remove("is-loading");
+photoCropSave.textContent = "Guardar";
   }
 });
