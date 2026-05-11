@@ -24,17 +24,21 @@ body {
 ========================================================= */
 
 .chat-page {
-  min-height: 100dvh;
+  height: 100dvh;
   padding-bottom: 142px;
   background: #eef2f3;
+  overflow: hidden;
 }
 
 .chat-content {
   width: 100%;
   max-width: 430px;
-  min-height: 100dvh;
+  height: calc(100dvh - 142px);
   margin: 0 auto;
   background: #eef2f3;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .chat-sidebar {
@@ -205,10 +209,12 @@ body {
 ========================================================= */
 
 .chat-panel {
-  min-height: calc(100dvh - 118px - 142px);
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   background: #eef2f3;
+  overflow: hidden;
 }
 
 .chat-panel__header {
@@ -217,8 +223,10 @@ body {
 
 .chat-messages {
   flex: 1;
+  min-height: 0;
   padding: 24px 18px;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 /* =========================================================
@@ -442,12 +450,13 @@ body {
 
 @media (min-width: 900px) {
   .chat-page {
-    min-height: 100dvh;
-    padding-bottom: 0;
-    display: grid;
-    grid-template-columns: 126px 220px 1fr;
-    background: #f7f7f7;
-  }
+  height: 100dvh;
+  padding-bottom: 0;
+  display: grid;
+  grid-template-columns: 126px 220px 1fr;
+  background: #f7f7f7;
+  overflow: hidden;
+}
 
   .chat-sidebar {
     display: flex;
@@ -517,25 +526,27 @@ body {
     object-fit: contain;
   }
 
-  .chat-content {
-    grid-column: 2 / 4;
-    max-width: none;
-    min-height: 100dvh;
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    background: #f5f5f5;
-  }
+.chat-content {
+  grid-column: 2 / 4;
+  max-width: none;
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  background: #f5f5f5;
+  overflow: hidden;
+}
 
   .chat-channels {
-    display: flex;
-    flex-direction: column;
-    background: #ffffff;
-    color: #111111;
-    border-right: 1.5px solid #bdbdbd;
-    padding: 38px 20px;
-    gap: 20px;
-    overflow: visible;
-  }
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: #111111;
+  border-right: 1.5px solid #bdbdbd;
+  padding: 38px 20px;
+  gap: 20px;
+  height: 100dvh;
+  overflow: hidden;
+}
 
   .chat-channels h1 {
     color: #aaaaaa;
@@ -595,9 +606,11 @@ body {
   }
 
   .chat-panel {
-    min-height: 100dvh;
-    background: #f5f5f5;
-  }
+  height: 100dvh;
+  min-height: 0;
+  background: #f5f5f5;
+  overflow: hidden;
+}
 
   .chat-panel__header {
     height: 88px;
