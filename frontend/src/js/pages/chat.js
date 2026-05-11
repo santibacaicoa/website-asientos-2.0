@@ -8,49 +8,8 @@ if (!token) {
 }
 
 let user = JSON.parse(localStorage.getItem("authUser") || "null");
-
-const channels = {
-  empleados: {
-    title: "#empleados",
-    placeholder: "Escribe en #empleados...",
-    messages: [
-      {
-        name: "Bot Assurant",
-        text: "Bienvenidos al canal de empleados. Acá podrán comunicarse empleados y supervisores.",
-        mine: false,
-        bot: true,
-      },
-    ],
-  },
-
-  supervisores: {
-    title: "#supervisores",
-    placeholder: "Escribe en #supervisores...",
-    messages: [
-      {
-        name: "Bot Assurant",
-        text: "Bienvenidos al canal de supervisores. Este espacio estará reservado para coordinación interna.",
-        mine: false,
-        bot: true,
-      },
-    ],
-  },
-
-  avisos: {
-    title: "#avisos",
-    placeholder: "Escribe en #avisos...",
-    messages: [
-      {
-        name: "Bot Assurant",
-        text: "Bienvenidos al canal de avisos. Acá aparecerán comunicados importantes para todos.",
-        mine: false,
-        bot: true,
-      },
-    ],
-  },
-};
-
 let activeChannel = "empleados";
+let availableChannels = [];
 
 const chatMessages = document.getElementById("chatMessages");
 const chatForm = document.getElementById("chatForm");
@@ -59,6 +18,33 @@ const activeChannelTitle = document.getElementById("activeChannelTitle");
 const channelSelect = document.querySelector(".chat-channel-select");
 const channelSelectButton = document.getElementById("channelSelectButton");
 const channelSelectLabel = document.getElementById("channelSelectLabel");
+const channelSelectMenu = document.getElementById("channelSelectMenu");
+
+const channelInfo = {
+  empleados: {
+    label: "Empleados",
+    title: "#empleados",
+    placeholder: "Escribe en #empleados...",
+    icon: "👤",
+    description: "Empleados y supervisores",
+  },
+
+  supervisores: {
+    label: "Supervisores",
+    title: "#supervisores",
+    placeholder: "Escribe en #supervisores...",
+    icon: "🛡️",
+    description: "Coordinación interna",
+  },
+
+  avisos: {
+    label: "Avisos",
+    title: "#avisos",
+    placeholder: "Escribe en #avisos...",
+    icon: "📣",
+    description: "Comunicados importantes",
+  },
+};
 
 function updateUIPhoto(photo) {
   document.querySelectorAll(".user-avatar").forEach((img) => {
@@ -66,15 +52,30 @@ function updateUIPhoto(photo) {
   });
 }
 
+async function apiRequest(path, options = {}) {
+  const res = await fetch(`${BACKEND_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...(options.headers || {}),
+    },
+  });
+
+  const data = await res.json();
+
+  if (!data.ok) {
+    throw new Error(data.message || "Error en la request.");
+  }
+
+  return data;
+}
+
 async function loadUserProfile() {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/auth/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const data = await apiRequest("/api/auth/profile");
 
-    const data = await res.json();
-
-    if (data.ok && data.user) {
+    if (data.user) {
       user = data.user;
       localStorage.setItem("authUser", JSON.stringify(user));
       updateUIPhoto(user.foto);
@@ -84,29 +85,84 @@ async function loadUserProfile() {
   }
 }
 
-function renderMessages() {
-  const channel = channels[activeChannel];
+function getMessageAuthor(message) {
+  if (message.tipo === "bot") {
+    return "Bot Assurant";
+  }
 
-  activeChannelTitle.textContent = channel.title;
-  chatInput.placeholder = channel.placeholder;
+  const fullName = `${message.nombre || ""} ${message.apellido || ""}`.trim();
 
+  return fullName || "Usuario";
+}
+
+function formatMessageTime(dateValue) {
+  const date = new Date(dateValue);
+
+  return new Intl.DateTimeFormat("es-AR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function createBotAvatar() {
+  return `
+    <div class="bot-avatar" aria-label="Bot Assurant">
+      <div class="bot-avatar__head">
+        <span class="bot-avatar__eye"></span>
+        <span class="bot-avatar__eye"></span>
+      </div>
+      <div class="bot-avatar__body">
+        <img src="./assets/images/ui/logo-assurant.png" alt="Assurant" />
+      </div>
+    </div>
+  `;
+}
+
+function renderMessages(messages) {
   chatMessages.innerHTML = "";
 
-  channel.messages.forEach((message) => {
-    const article = document.createElement("article");
-    article.className = message.mine ? "message message--mine" : "message";
+  if (!messages.length) {
+    chatMessages.innerHTML = `
+      <div class="chat-empty-state">
+        <strong>No hay mensajes todavía</strong>
+        <span>Cuando alguien escriba en este canal, aparecerá acá.</span>
+      </div>
+    `;
+    return;
+  }
 
-    article.innerHTML = message.mine
-      ? `<div class="message__bubble">${message.text}</div>`
-      : `
-        <div class="message__avatar">
-          <img src="${message.bot ? "./assets/images/ui/logo-assurant.png" : DEFAULT_AVATAR}" alt="${message.name}" />
-        </div>
+  messages.forEach((message) => {
+    const isMine = message.usuario_id === user?.id;
+    const isBot = message.tipo === "bot";
+    const author = getMessageAuthor(message);
+
+    const article = document.createElement("article");
+    article.className = isMine ? "message message--mine" : "message";
+
+    if (isMine) {
+      article.innerHTML = `
         <div>
-          <p class="message__name">${message.name}</p>
-          <div class="message__bubble">${message.text}</div>
+          <div class="message__bubble">${escapeHtml(message.mensaje)}</div>
+          <span class="message__time">${formatMessageTime(message.created_at)}</span>
         </div>
       `;
+    } else {
+      article.innerHTML = `
+        <div class="message__avatar">
+          ${
+            isBot
+              ? createBotAvatar()
+              : `<img src="${message.foto || DEFAULT_AVATAR}" alt="${author}" />`
+          }
+        </div>
+
+        <div>
+          <p class="message__name">${escapeHtml(author)}</p>
+          <div class="message__bubble">${escapeHtml(message.mensaje)}</div>
+          <span class="message__time">${formatMessageTime(message.created_at)}</span>
+        </div>
+      `;
+    }
 
     chatMessages.appendChild(article);
   });
@@ -114,24 +170,139 @@ function renderMessages() {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-document.querySelectorAll(".channel-card").forEach((button) => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll(".channel-card").forEach((item) => {
-      item.classList.remove("is-active");
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function updateActiveChannelUI() {
+  const info = channelInfo[activeChannel];
+
+  if (activeChannelTitle) {
+    activeChannelTitle.textContent = info.title;
+  }
+
+  if (chatInput) {
+    chatInput.placeholder = info.placeholder;
+  }
+
+  if (channelSelectLabel) {
+    channelSelectLabel.textContent = info.label;
+  }
+
+  document.querySelectorAll(".channel-card").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.channel === activeChannel);
+  });
+
+  const activeChannelConfig = availableChannels.find(
+    (channel) => channel.key === activeChannel
+  );
+
+  if (chatInput) {
+    chatInput.disabled = !activeChannelConfig?.canWrite;
+    chatInput.placeholder = activeChannelConfig?.canWrite
+      ? info.placeholder
+      : "Este canal es sólo lectura para tu usuario.";
+  }
+
+  const submitButton = chatForm?.querySelector("button");
+
+  if (submitButton) {
+    submitButton.disabled = !activeChannelConfig?.canWrite;
+  }
+}
+
+function renderChannelMenu() {
+  if (!channelSelectMenu) return;
+
+  channelSelectMenu.innerHTML = "";
+
+  availableChannels.forEach((channel) => {
+    const info = channelInfo[channel.key];
+
+    const button = document.createElement("button");
+    button.className = "channel-card";
+    button.dataset.channel = channel.key;
+    button.type = "button";
+
+    button.innerHTML = `
+      <span class="channel-icon">${info.icon}</span>
+      <span>
+        <strong>${info.label}</strong>
+        <small>${info.description}</small>
+      </span>
+    `;
+
+    button.addEventListener("click", async () => {
+      activeChannel = channel.key;
+      channelSelect?.classList.remove("is-open");
+      updateActiveChannelUI();
+      await loadMessages();
     });
 
-    button.classList.add("is-active");
-    activeChannel = button.dataset.channel;
+    channelSelectMenu.appendChild(button);
+  });
 
-    if (channelSelectLabel) {
-      const channelName = button.querySelector("strong")?.textContent || "Canal";
-      channelSelectLabel.textContent = channelName;
+  updateActiveChannelUI();
+}
+
+async function loadChannels() {
+  try {
+    const data = await apiRequest("/api/chat/channels");
+
+    availableChannels = data.channels || [];
+
+    if (!availableChannels.some((channel) => channel.key === activeChannel)) {
+      activeChannel = availableChannels[0]?.key || "empleados";
     }
 
-    channelSelect?.classList.remove("is-open");
+    renderChannelMenu();
+  } catch (error) {
+    console.error("Error cargando canales:", error);
+  }
+}
 
-    renderMessages();
-  });
+async function loadMessages() {
+  try {
+    const data = await apiRequest(`/api/chat/${activeChannel}/messages`);
+    renderMessages(data.messages || []);
+  } catch (error) {
+    console.error("Error cargando mensajes:", error);
+
+    chatMessages.innerHTML = `
+      <div class="chat-empty-state">
+        <strong>No se pudo cargar este canal</strong>
+        <span>${escapeHtml(error.message)}</span>
+      </div>
+    `;
+  }
+}
+
+chatForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const text = chatInput.value.trim();
+
+  if (!text) return;
+
+  try {
+    chatInput.value = "";
+
+    await apiRequest(`/api/chat/${activeChannel}/messages`, {
+      method: "POST",
+      body: JSON.stringify({
+        message: text,
+      }),
+    });
+
+    await loadMessages();
+  } catch (error) {
+    console.error("Error enviando mensaje:", error);
+  }
 });
 
 channelSelectButton?.addEventListener("click", (event) => {
@@ -147,30 +318,11 @@ channelSelect?.addEventListener("click", (event) => {
   event.stopPropagation();
 });
 
-chatForm?.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const text = chatInput.value.trim();
-
-  if (!text) return;
-
-  channels[activeChannel].messages.push({
-    name: user?.nombre || "Usuario",
-    text,
-    mine: true,
-  });
-
-  chatInput.value = "";
-  renderMessages();
-});
-
 const profileMenuButtonDesktop = document.getElementById("profileMenuButtonDesktop");
-const profileMenuButtonMobile = document.getElementById("profileMenuButtonMobile");
 const profileMenuButtonBottom = document.getElementById("profileMenuButtonBottom");
 
 const profileDropdownDesktop = document.getElementById("profileDropdownDesktop");
 const profileDropdownMobile = document.getElementById("profileDropdownMobile");
-const profileMenuButtonHeader = document.getElementById("profileMenuButtonHeader");
 
 function closeProfileMenus() {
   profileDropdownDesktop?.classList.remove("is-open");
@@ -184,7 +336,9 @@ function toggleDropdown(dropdown) {
 
   closeProfileMenus();
 
-  if (!isOpen) dropdown.classList.add("is-open");
+  if (!isOpen) {
+    dropdown.classList.add("is-open");
+  }
 }
 
 profileMenuButtonDesktop?.addEventListener("click", (event) => {
@@ -192,21 +346,17 @@ profileMenuButtonDesktop?.addEventListener("click", (event) => {
   toggleDropdown(profileDropdownDesktop);
 });
 
-profileMenuButtonMobile?.addEventListener("click", (event) => {
-  event.stopPropagation();
-  toggleDropdown(profileDropdownMobile);
-});
-
 profileMenuButtonBottom?.addEventListener("click", (event) => {
   event.stopPropagation();
   toggleDropdown(profileDropdownMobile);
 });
 
-profileDropdownDesktop?.addEventListener("click", (event) => event.stopPropagation());
-profileDropdownMobile?.addEventListener("click", (event) => event.stopPropagation());
-profileMenuButtonHeader?.addEventListener("click", (event) => {
+profileDropdownDesktop?.addEventListener("click", (event) => {
   event.stopPropagation();
-  toggleDropdown(profileDropdownMobile);
+});
+
+profileDropdownMobile?.addEventListener("click", (event) => {
+  event.stopPropagation();
 });
 
 document.addEventListener("click", closeProfileMenus);
@@ -219,5 +369,12 @@ document.querySelectorAll(".logoutAction").forEach((button) => {
   });
 });
 
-loadUserProfile();
-renderMessages();
+async function initChat() {
+  await loadUserProfile();
+  await loadChannels();
+  await loadMessages();
+
+  setInterval(loadMessages, 15000);
+}
+
+initChat();
