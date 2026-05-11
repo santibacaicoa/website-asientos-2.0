@@ -38,77 +38,88 @@ body {
 }
 
 /* =========================================================
-   BACKGROUND VISUAL HUB - MOBILE FIRST
-   Función:
-   - Fondo decorativo con tiras diagonales.
-   - Usa imágenes existentes del proyecto.
-   - Queda detrás del contenido.
+   BACKGROUND VISUAL HUB - STICKER PATTERN MOBILE FIRST
 ========================================================= */
 
-.hub-background {
+.hub-pattern {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
   background:
-    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8), transparent 32%),
+    radial-gradient(circle at 18% 18%, rgba(255, 193, 91, 0.16), transparent 28%),
+    radial-gradient(circle at 88% 22%, rgba(0, 101, 151, 0.11), transparent 26%),
+    radial-gradient(circle at 70% 86%, rgba(255, 255, 255, 0.9), transparent 30%),
     linear-gradient(135deg, #f7f7f5 0%, #eeeeec 100%);
 }
 
-.hub-background::after {
+.hub-pattern::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(247, 247, 245, 0.72);
-  backdrop-filter: blur(0.4px);
+  background: rgba(247, 247, 245, 0.58);
 }
 
-.hub-background__row {
+.hub-sticker {
   position: absolute;
-  left: -26%;
-  width: 152%;
-  height: 92px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  opacity: 0.34;
-  filter: grayscale(1);
-  transform: rotate(-12deg);
-}
-
-.hub-background__row img {
-  width: 118px;
-  height: 72px;
+  width: 54px;
+  height: 54px;
   border-radius: 18px;
-  object-fit: cover;
-  opacity: 0.42;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(20, 20, 20, 0.08);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.07);
+  color: rgba(17, 17, 17, 0.42);
+  font-size: 27px;
+  display: grid;
+  place-items: center;
+  opacity: 0.5;
+  filter: grayscale(0.25);
+  transform: rotate(-10deg);
 }
 
-.hub-background__text {
-  white-space: nowrap;
-  font-size: 22px;
+.hub-sticker--logo img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  opacity: 0.72;
+}
+
+.hub-sticker--text {
+  width: auto;
+  min-width: 118px;
+  padding: 0 16px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.22em;
-  color: rgba(20, 20, 20, 0.18);
+  letter-spacing: 0.16em;
 }
 
-.hub-background__row--one {
-  top: 9%;
+/* posiciones mobile */
+.s1 { top: 8%; left: 7%; }
+.s2 { top: 13%; right: 12%; transform: rotate(12deg); }
+.s3 { top: 28%; left: -10px; transform: rotate(-18deg); }
+.s4 { top: 35%; right: 5%; transform: rotate(10deg); }
+.s5 { top: 52%; left: 8%; transform: rotate(14deg); }
+.s6 { top: 63%; right: 10%; transform: rotate(-12deg); }
+.s7 { bottom: 18%; left: 5%; transform: rotate(8deg); }
+.s8 { bottom: 11%; right: 9%; transform: rotate(-8deg); }
+.s9 { top: 22%; left: 30%; transform: rotate(-9deg); }
+.s10 { top: 76%; left: 38%; transform: rotate(13deg); }
+.s11 { top: 44%; left: 45%; transform: rotate(-15deg); }
+.s12 { bottom: 30%; right: -8px; transform: rotate(16deg); }
+
+.s13,
+.s14,
+.s15,
+.s16,
+.s17,
+.s18,
+.s19,
+.s20 {
+  display: none;
 }
 
-.hub-background__row--two {
-  top: 44%;
-  transform: rotate(12deg);
-  justify-content: flex-end;
-}
-
-.hub-background__row--three {
-  bottom: 10%;
-}
-
-/* Mantiene el contenido real por encima del fondo */
+/* Mantiene el contenido real por encima */
 .hub-sidebar,
 .hub-content,
 .hub-bottom-nav {
@@ -586,35 +597,57 @@ body {
 ========================================================= */
 
 @media (min-width: 900px) {
-  .hub-background__row {
-    left: -18%;
-    width: 136%;
-    height: 128px;
-    gap: 28px;
-    opacity: 0.42;
-  }
-
-  .hub-background__row img {
-    width: 180px;
-    height: 106px;
-    border-radius: 24px;
-  }
-
-  .hub-background__text {
+    .hub-sticker {
+    width: 68px;
+    height: 68px;
+    border-radius: 22px;
     font-size: 34px;
+    opacity: 0.56;
   }
 
-  .hub-background__row--one {
-    top: 7%;
+  .hub-sticker--logo img {
+    width: 46px;
+    height: 46px;
   }
 
-  .hub-background__row--two {
-    top: 42%;
+  .hub-sticker--text {
+    min-width: 150px;
+    height: 54px;
+    font-size: 14px;
   }
 
-  .hub-background__row--three {
-    bottom: 7%;
+  .s1 { top: 7%; left: 12%; }
+  .s2 { top: 11%; right: 14%; }
+  .s3 { top: 28%; left: 18%; }
+  .s4 { top: 33%; right: 9%; }
+  .s5 { top: 54%; left: 13%; }
+  .s6 { top: 62%; right: 18%; }
+  .s7 { bottom: 15%; left: 20%; }
+  .s8 { bottom: 10%; right: 12%; }
+  .s9 { top: 20%; left: 42%; }
+  .s10 { top: 78%; left: 45%; }
+  .s11 { top: 43%; left: 52%; }
+  .s12 { bottom: 28%; right: 4%; }
+
+  .s13,
+  .s14,
+  .s15,
+  .s16,
+  .s17,
+  .s18,
+  .s19,
+  .s20 {
+    display: grid;
   }
+
+  .s13 { top: 17%; left: 28%; transform: rotate(15deg); }
+  .s14 { top: 72%; left: 9%; transform: rotate(-12deg); }
+  .s15 { top: 7%; left: 57%; transform: rotate(-8deg); }
+  .s16 { top: 49%; right: 31%; transform: rotate(10deg); }
+  .s17 { bottom: 21%; right: 27%; transform: rotate(-10deg); }
+  .s18 { bottom: 39%; left: 29%; transform: rotate(13deg); }
+  .s19 { top: 83%; right: 36%; transform: rotate(-14deg); }
+  .s20 { top: 24%; right: 25%; transform: rotate(11deg); }
 
   .hub-page {
     min-height: 100vh;
