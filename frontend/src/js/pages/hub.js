@@ -39,6 +39,10 @@ let user = userRaw ? JSON.parse(userRaw) : null;
 ========================================================= */
 
 const userFirstNameElement = document.getElementById("userFirstName");
+const supervisorButton = document.getElementById("supervisorButton");
+const supervisorName = document.getElementById("supervisorName");
+const supervisorArrow = document.getElementById("supervisorArrow");
+const supervisorAvatar = document.getElementById("supervisorAvatar");
 
 function updateUserName(currentUser) {
   if (userFirstNameElement) {
@@ -46,7 +50,32 @@ function updateUserName(currentUser) {
   }
 }
 
+function updateSupervisorCard(currentUser) {
+  const supervisor = currentUser?.supervisor;
+
+  if (!supervisorButton || !supervisorName || !supervisorArrow || !supervisorAvatar) {
+    return;
+  }
+
+  if (!supervisor) {
+    supervisorButton.classList.add("is-unassigned");
+    supervisorName.textContent = "Seleccionar";
+    supervisorArrow.style.display = "inline";
+    supervisorAvatar.src = DEFAULT_AVATAR;
+    return;
+  }
+
+  supervisorButton.classList.remove("is-unassigned");
+
+  const fullName = `${supervisor.nombre || ""} ${supervisor.apellido || ""}`.trim();
+
+  supervisorName.textContent = fullName || "Supervisor";
+  supervisorArrow.style.display = "none";
+  supervisorAvatar.src = supervisor.foto || DEFAULT_AVATAR;
+}
+
 updateUserName(user);
+updateSupervisorCard(user);
 
 /* =========================================================
    4. ACTUALIZAR AVATAR
@@ -95,7 +124,8 @@ async function loadUserProfile() {
     localStorage.setItem("authUser", JSON.stringify(user));
 
     updateUserName(user);
-    updateUIPhoto(user.foto);
+updateSupervisorCard(user);
+updateUIPhoto(user.foto);
   } catch (error) {
     console.error("Error cargando perfil:", error);
   }

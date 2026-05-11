@@ -35,16 +35,21 @@ export async function findUserByEmail(email) {
 export async function findUserById(userId) {
   const query = `
     SELECT 
-      id, 
-      email, 
-      nombre, 
-      apellido, 
-      rol, 
-      estado_cuenta,
-      supervisor_id,
-      foto
-    FROM usuarios
-    WHERE id = $1
+      u.id, 
+      u.email, 
+      u.nombre, 
+      u.apellido, 
+      u.rol, 
+      u.estado_cuenta,
+      u.supervisor_id,
+      u.foto,
+      s.id AS supervisor_id_real,
+      s.nombre AS supervisor_nombre,
+      s.apellido AS supervisor_apellido,
+      s.foto AS supervisor_foto
+    FROM usuarios u
+    LEFT JOIN usuarios s ON s.id = u.supervisor_id
+    WHERE u.id = $1
     LIMIT 1
   `;
 

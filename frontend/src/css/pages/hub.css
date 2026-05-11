@@ -330,10 +330,22 @@ body {
   transform: translateY(-1px);
 }
 
-.hub-supervisor-card__button img {
+.hub-supervisor-card__arrow {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.hub-supervisor-card__avatar {
   width: 30px;
   height: 30px;
-  object-fit: contain;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  background: #ffffff;
+}
+
+.hub-supervisor-card__button.is-unassigned .hub-supervisor-card__avatar {
+  display: none;
 }
 
 /* =========================================================

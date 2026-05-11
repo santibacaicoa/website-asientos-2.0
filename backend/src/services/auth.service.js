@@ -238,6 +238,27 @@ export async function resetPassword({ email, token, password }) {
   };
 }
 
+function formatUserProfile(user) {
+  return {
+    id: user.id,
+    email: user.email,
+    nombre: user.nombre,
+    apellido: user.apellido,
+    rol: user.rol,
+    estado_cuenta: user.estado_cuenta,
+    supervisor_id: user.supervisor_id,
+    foto: user.foto,
+    supervisor: user.supervisor_id_real
+      ? {
+          id: user.supervisor_id_real,
+          nombre: user.supervisor_nombre,
+          apellido: user.supervisor_apellido,
+          foto: user.supervisor_foto,
+        }
+      : null,
+  };
+}
+
 export async function getProfile({ userId }) {
   const user = await findUserById(userId);
 
@@ -245,7 +266,9 @@ export async function getProfile({ userId }) {
     throw new Error("Usuario no encontrado.");
   }
 
-  return { user };
+  return {
+    user: formatUserProfile(user),
+  };
 }
 
 export async function updateProfilePhoto({ userId, foto }) {
@@ -267,8 +290,10 @@ export async function updateProfilePhoto({ userId, foto }) {
     throw new Error("Usuario no encontrado.");
   }
 
-  return {
-    message: "Foto actualizada correctamente.",
-    user: updatedUser,
-  };
+  const refreshedUser = await findUserById(updatedUser.id);
+
+return {
+  message: "Foto actualizada correctamente.",
+  user: formatUserProfile(refreshedUser),
+};
 }
