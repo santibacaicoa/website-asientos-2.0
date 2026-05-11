@@ -767,3 +767,14 @@ body {
   height: 15px;
   object-fit: contain;
 }
+
+.chat-channel-loading {
+  min-height: 52px;
+  border-radius: 12px;
+  background: #eeeeee;
+  color: #777777;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
