@@ -22,11 +22,11 @@ const channelSelectMenu = document.getElementById("channelSelectMenu");
 
 const channelInfo = {
   empleados: {
-    label: "Empleados",
-    title: "#empleados",
-    placeholder: "Escribe en #empleados...",
-    icon: "👤",
-    description: "Empleados y supervisores",
+    label: "Procesadores",
+    title: "#procesadores",
+    placeholder: "Escribe en #procesadores...",
+    icon: "🧑‍💻",
+    description: "Procesadores y supervisores",
   },
 
   supervisores: {

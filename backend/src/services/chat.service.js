@@ -8,7 +8,7 @@ const CHAT_RETENTION_DAYS = 30;
 
 const CHANNELS = {
   empleados: {
-    label: "Empleados",
+    label: "Procesadores",
     canRead: ["empleado", "supervisor", "admin"],
     canWrite: ["empleado", "supervisor", "admin"],
   },

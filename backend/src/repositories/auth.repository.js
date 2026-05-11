@@ -124,7 +124,8 @@ export async function createVerificationToken({
 /* =========================================================
    CREAR USUARIO
    Función:
-   - Crea usuario empleado activo.
+   - Crea usuario procesador activo.
+   - Internamente el rol sigue siendo "empleado" por compatibilidad.
    - La foto arranca en NULL.
 ========================================================= */
 export async function createUser({
