@@ -24,7 +24,7 @@
         <span class="hub-sticker s7">📅</span>
         <span class="hub-sticker s8">🤖</span>
         <span class="hub-sticker hub-sticker--text s9">RESERVAS</span>
-        <span class="hub-sticker s10">🧑‍💻</span>
+        <span class="hub-sticker s10">🧑</span>
         <span class="hub-sticker s11">🏢</span>
         <span class="hub-sticker s12">✅</span>
 
@@ -357,6 +357,35 @@
             Guardar
           </button>
         </footer>
+      </section>
+    </div>
+
+    <!-- =====================================================
+     MODAL SELECCIONAR SUPERVISOR
+====================================================== -->
+    <div class="supervisor-modal" id="supervisorModal" aria-hidden="true">
+      <div class="supervisor-modal__backdrop"></div>
+
+      <section class="supervisor-modal__panel" role="dialog" aria-modal="true">
+        <header class="supervisor-modal__header">
+          <div>
+            <h2>Seleccionar supervisor</h2>
+            <p>Elegí quién será tu supervisor asignado.</p>
+          </div>
+
+          <button
+            class="supervisor-modal__close"
+            id="supervisorModalClose"
+            type="button"
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </header>
+
+        <div class="supervisor-modal__list" id="supervisorList">
+          <div class="supervisor-modal__loading">Cargando supervisores...</div>
+        </div>
       </section>
     </div>
 

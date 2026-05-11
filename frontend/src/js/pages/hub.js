@@ -43,6 +43,11 @@ const supervisorButton = document.getElementById("supervisorButton");
 const supervisorName = document.getElementById("supervisorName");
 const supervisorArrow = document.getElementById("supervisorArrow");
 const supervisorAvatar = document.getElementById("supervisorAvatar");
+const supervisorModal = document.getElementById("supervisorModal");
+const supervisorModalClose = document.getElementById("supervisorModalClose");
+const supervisorList = document.getElementById("supervisorList");
+
+let supervisorsCache = [];
 
 function updateUserName(currentUser) {
   if (userFirstNameElement) {
@@ -72,6 +77,132 @@ function updateSupervisorCard(currentUser) {
   supervisorName.textContent = fullName || "Supervisor";
   supervisorArrow.style.display = "none";
   supervisorAvatar.src = supervisor.foto || DEFAULT_AVATAR;
+}
+
+function openSupervisorModal() {
+  if (!supervisorModal) return;
+
+  supervisorModal.classList.add("is-open");
+  supervisorModal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeSupervisorModal() {
+  if (!supervisorModal) return;
+
+  supervisorModal.classList.remove("is-open");
+  supervisorModal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+function renderSupervisorsList(supervisors) {
+  if (!supervisorList) return;
+
+  if (!supervisors.length) {
+    supervisorList.innerHTML = `
+      <div class="supervisor-modal__empty">
+        No hay supervisores disponibles por ahora.
+      </div>
+    `;
+    return;
+  }
+
+  supervisorList.innerHTML = "";
+
+  supervisors.forEach((supervisor) => {
+    const fullName = `${supervisor.nombre || ""} ${supervisor.apellido || ""}`.trim();
+    const isSelected = Number(user?.supervisor_id) === Number(supervisor.id);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = isSelected
+      ? "supervisor-option is-selected"
+      : "supervisor-option";
+
+    button.innerHTML = `
+      <img
+        class="supervisor-option__avatar"
+        src="${supervisor.foto || DEFAULT_AVATAR}"
+        alt="${fullName || "Supervisor"}"
+      />
+
+      <span class="supervisor-option__info">
+        <strong>${fullName || "Supervisor"}</strong>
+        <small>${supervisor.email || ""}</small>
+      </span>
+    `;
+
+    button.addEventListener("click", () => {
+      assignSupervisor(supervisor.id);
+    });
+
+    supervisorList.appendChild(button);
+  });
+}
+
+async function loadSupervisors() {
+  if (!supervisorList) return;
+
+  supervisorList.innerHTML = `
+    <div class="supervisor-modal__loading">
+      Cargando supervisores...
+    </div>
+  `;
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/users/supervisors`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      throw new Error(data.message || "No se pudieron cargar los supervisores.");
+    }
+
+    supervisorsCache = data.supervisors || [];
+    renderSupervisorsList(supervisorsCache);
+  } catch (error) {
+    console.error("Error cargando supervisores:", error);
+
+    supervisorList.innerHTML = `
+      <div class="supervisor-modal__empty">
+        No se pudieron cargar los supervisores.
+      </div>
+    `;
+  }
+}
+
+async function assignSupervisor(supervisorId) {
+  if (!supervisorId) return;
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/users/me/supervisor`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        supervisorId,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      throw new Error(data.message || "No se pudo asignar el supervisor.");
+    }
+
+    await loadUserProfile();
+
+    closeSupervisorModal();
+  } catch (error) {
+    console.error("Error asignando supervisor:", error);
+  }
 }
 
 updateUserName(user);
@@ -246,6 +377,22 @@ document.addEventListener("click", () => {
   closeProfileMenus();
 });
 
+supervisorButton?.addEventListener("click", async () => {
+  if (user?.rol !== "empleado") return;
+
+  openSupervisorModal();
+  await loadSupervisors();
+});
+
+supervisorModalClose?.addEventListener("click", () => {
+  closeSupervisorModal();
+});
+
+supervisorModal?.addEventListener("click", (event) => {
+  if (event.target === supervisorModal) {
+    closeSupervisorModal();
+  }
+});
 /* =========================================================
    9. LOGOUT
 ========================================================= */
