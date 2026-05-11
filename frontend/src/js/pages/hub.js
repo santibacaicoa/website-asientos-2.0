@@ -222,10 +222,12 @@ document.querySelectorAll(".logoutAction").forEach((button) => {
 });
 
 /* =========================================================
-   10. CAMBIAR FOTO DE PERFIL
+   10. CAMBIAR FOTO DE PERFIL - RECORTE CON PREVIEW
    Función:
    - Abre selector de imagen.
-   - Convierte imagen a base64.
+   - Muestra modal con preview circular.
+   - Permite ajustar zoom.
+   - Recorta la imagen en canvas.
    - La manda al backend.
    - Backend la guarda en Neon.
    - Actualiza localStorage y UI.
@@ -234,6 +236,144 @@ document.querySelectorAll(".logoutAction").forEach((button) => {
 const changePhotoButtons = document.querySelectorAll(".changePhotoBtn");
 const photoInput = document.getElementById("photoInput");
 
+const photoCropModal = document.getElementById("photoCropModal");
+const photoCropCanvas = document.getElementById("photoCropCanvas");
+const photoCropZoom = document.getElementById("photoCropZoom");
+const photoCropClose = document.getElementById("photoCropClose");
+const photoCropCancel = document.getElementById("photoCropCancel");
+const photoCropSave = document.getElementById("photoCropSave");
+
+const photoCropCtx = photoCropCanvas?.getContext("2d");
+
+let selectedPhotoImage = null;
+let selectedPhotoFile = null;
+let selectedPhotoZoom = 1;
+
+function openPhotoCropModal() {
+  if (!photoCropModal) return;
+
+  photoCropModal.classList.add("is-open");
+  photoCropModal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closePhotoCropModal() {
+  if (!photoCropModal) return;
+
+  photoCropModal.classList.remove("is-open");
+  photoCropModal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+
+  selectedPhotoImage = null;
+  selectedPhotoFile = null;
+  selectedPhotoZoom = 1;
+
+  if (photoCropZoom) {
+    photoCropZoom.value = "1";
+  }
+
+  if (photoInput) {
+    photoInput.value = "";
+  }
+
+  if (photoCropCtx && photoCropCanvas) {
+    photoCropCtx.clearRect(0, 0, photoCropCanvas.width, photoCropCanvas.height);
+  }
+}
+
+function drawPhotoPreview() {
+  if (!photoCropCtx || !photoCropCanvas || !selectedPhotoImage) return;
+
+  const canvasSize = photoCropCanvas.width;
+  const imageWidth = selectedPhotoImage.naturalWidth;
+  const imageHeight = selectedPhotoImage.naturalHeight;
+
+  photoCropCtx.clearRect(0, 0, canvasSize, canvasSize);
+
+  photoCropCtx.save();
+
+  photoCropCtx.beginPath();
+  photoCropCtx.arc(
+    canvasSize / 2,
+    canvasSize / 2,
+    canvasSize / 2,
+    0,
+    Math.PI * 2
+  );
+  photoCropCtx.clip();
+
+  const baseScale = Math.max(canvasSize / imageWidth, canvasSize / imageHeight);
+  const finalScale = baseScale * selectedPhotoZoom;
+
+  const drawWidth = imageWidth * finalScale;
+  const drawHeight = imageHeight * finalScale;
+
+  const drawX = (canvasSize - drawWidth) / 2;
+  const drawY = (canvasSize - drawHeight) / 2;
+
+  photoCropCtx.drawImage(
+    selectedPhotoImage,
+    drawX,
+    drawY,
+    drawWidth,
+    drawHeight
+  );
+
+  photoCropCtx.restore();
+}
+
+function loadImageFromFile(file) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      image.src = reader.result;
+    };
+
+    image.onload = () => {
+      resolve(image);
+    };
+
+    reader.onerror = reject;
+    image.onerror = reject;
+
+    reader.readAsDataURL(file);
+  });
+}
+
+function getCroppedPhotoBase64(quality = 0.82) {
+  if (!photoCropCanvas) return null;
+
+  return photoCropCanvas.toDataURL("image/jpeg", quality);
+}
+
+async function uploadProfilePhoto(base64Photo) {
+  const res = await fetch(`${BACKEND_URL}/api/auth/profile/photo`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      foto: base64Photo,
+    }),
+  });
+
+  const text = await res.text();
+
+  let data;
+
+  try {
+    data = JSON.parse(text);
+  } catch {
+    console.error("Respuesta no JSON del backend:", text);
+    return null;
+  }
+
+  return data;
+}
+
 changePhotoButtons.forEach((button) => {
   button.addEventListener("click", () => {
     closeProfileMenus();
@@ -241,76 +381,68 @@ changePhotoButtons.forEach((button) => {
   });
 });
 
-function resizeImageToBase64(file, maxSize = 600, quality = 0.78) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      img.src = reader.result;
-    };
-
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-
-      let { width, height } = img;
-
-      if (width > height && width > maxSize) {
-        height = Math.round((height * maxSize) / width);
-        width = maxSize;
-      } else if (height > maxSize) {
-        width = Math.round((width * maxSize) / height);
-        height = maxSize;
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, width, height);
-
-      resolve(canvas.toDataURL("image/jpeg", quality));
-    };
-
-    reader.onerror = reject;
-    img.onerror = reject;
-
-    reader.readAsDataURL(file);
-  });
-}
-
 photoInput?.addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
 
   if (!file) return;
 
+  if (!file.type.startsWith("image/")) {
+    console.error("El archivo seleccionado no es una imagen.");
+    photoInput.value = "";
+    return;
+  }
+
   try {
-    const base64 = await resizeImageToBase64(file);
+    selectedPhotoFile = file;
+    selectedPhotoImage = await loadImageFromFile(file);
+    selectedPhotoZoom = 1;
 
-    const res = await fetch(`${BACKEND_URL}/api/auth/profile/photo`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        foto: base64,
-      }),
-    });
-
-    const text = await res.text();
-
-    let data;
-
-    try {
-      data = JSON.parse(text);
-    } catch {
-      console.error("Respuesta no JSON del backend:", text);
-      return;
+    if (photoCropZoom) {
+      photoCropZoom.value = "1";
     }
 
-    if (!data.ok || !data.user) {
-      console.error("Error actualizando foto:", data.message);
+    drawPhotoPreview();
+    openPhotoCropModal();
+  } catch (error) {
+    console.error("Error cargando imagen:", error);
+    photoInput.value = "";
+  }
+});
+
+photoCropZoom?.addEventListener("input", () => {
+  selectedPhotoZoom = Number(photoCropZoom.value);
+  drawPhotoPreview();
+});
+
+photoCropClose?.addEventListener("click", () => {
+  closePhotoCropModal();
+});
+
+photoCropCancel?.addEventListener("click", () => {
+  closePhotoCropModal();
+});
+
+photoCropModal?.addEventListener("click", (event) => {
+  if (event.target === photoCropModal) {
+    closePhotoCropModal();
+  }
+});
+
+photoCropSave?.addEventListener("click", async () => {
+  if (!selectedPhotoImage) return;
+
+  const base64 = getCroppedPhotoBase64();
+
+  if (!base64) return;
+
+  try {
+    photoCropSave.disabled = true;
+    photoCropSave.textContent = "Guardando...";
+
+    const data = await uploadProfilePhoto(base64);
+
+    if (!data?.ok || !data.user) {
+      console.error("Error actualizando foto:", data?.message);
       return;
     }
 
@@ -319,8 +451,11 @@ photoInput?.addEventListener("change", async (event) => {
     localStorage.setItem("authUser", JSON.stringify(user));
     updateUIPhoto(user.foto);
 
-    photoInput.value = "";
+    closePhotoCropModal();
   } catch (error) {
     console.error("Error subiendo foto:", error);
+  } finally {
+    photoCropSave.disabled = false;
+    photoCropSave.textContent = "Guardar";
   }
 });
