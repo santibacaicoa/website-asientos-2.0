@@ -3,6 +3,7 @@ import cors from "cors";
 import { env } from "./config/env.js";
 import authRoutes from "./routes/auth.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
+import usersRoutes from "./routes/users.routes.js";
 
 const app = express();
 
