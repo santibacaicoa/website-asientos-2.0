@@ -247,7 +247,16 @@ const photoCropCtx = photoCropCanvas?.getContext("2d");
 
 let selectedPhotoImage = null;
 let selectedPhotoFile = null;
+
 let selectedPhotoZoom = 1;
+
+let selectedPhotoOffsetX = 0;
+let selectedPhotoOffsetY = 0;
+
+let isDraggingPhoto = false;
+
+let dragStartX = 0;
+let dragStartY = 0;
 
 function openPhotoCropModal() {
   if (!photoCropModal) return;
@@ -267,6 +276,8 @@ function closePhotoCropModal() {
   selectedPhotoImage = null;
   selectedPhotoFile = null;
   selectedPhotoZoom = 1;
+  selectedPhotoOffsetX = 0;
+selectedPhotoOffsetY = 0;
 
   if (photoCropZoom) {
     photoCropZoom.value = "1";
@@ -285,6 +296,7 @@ function drawPhotoPreview() {
   if (!photoCropCtx || !photoCropCanvas || !selectedPhotoImage) return;
 
   const canvasSize = photoCropCanvas.width;
+
   const imageWidth = selectedPhotoImage.naturalWidth;
   const imageHeight = selectedPhotoImage.naturalHeight;
 
@@ -293,6 +305,7 @@ function drawPhotoPreview() {
   photoCropCtx.save();
 
   photoCropCtx.beginPath();
+
   photoCropCtx.arc(
     canvasSize / 2,
     canvasSize / 2,
@@ -300,16 +313,24 @@ function drawPhotoPreview() {
     0,
     Math.PI * 2
   );
+
   photoCropCtx.clip();
 
-  const baseScale = Math.max(canvasSize / imageWidth, canvasSize / imageHeight);
+  const baseScale = Math.max(
+    canvasSize / imageWidth,
+    canvasSize / imageHeight
+  );
+
   const finalScale = baseScale * selectedPhotoZoom;
 
   const drawWidth = imageWidth * finalScale;
   const drawHeight = imageHeight * finalScale;
 
-  const drawX = (canvasSize - drawWidth) / 2;
-  const drawY = (canvasSize - drawHeight) / 2;
+  const drawX =
+    (canvasSize - drawWidth) / 2 + selectedPhotoOffsetX;
+
+  const drawY =
+    (canvasSize - drawHeight) / 2 + selectedPhotoOffsetY;
 
   photoCropCtx.drawImage(
     selectedPhotoImage,
@@ -396,6 +417,8 @@ photoInput?.addEventListener("change", async (event) => {
     selectedPhotoFile = file;
     selectedPhotoImage = await loadImageFromFile(file);
     selectedPhotoZoom = 1;
+    selectedPhotoOffsetX = 0;
+selectedPhotoOffsetY = 0;
 
     if (photoCropZoom) {
       photoCropZoom.value = "1";
@@ -412,6 +435,82 @@ photoInput?.addEventListener("change", async (event) => {
 photoCropZoom?.addEventListener("input", () => {
   selectedPhotoZoom = Number(photoCropZoom.value);
   drawPhotoPreview();
+});
+
+/* =========================================================
+   DRAG FOTO PERFIL
+   Función:
+   - Permite mover la imagen con mouse o touch.
+========================================================= */
+
+function startPhotoDrag(clientX, clientY) {
+  isDraggingPhoto = true;
+
+  dragStartX = clientX - selectedPhotoOffsetX;
+  dragStartY = clientY - selectedPhotoOffsetY;
+}
+
+function movePhotoDrag(clientX, clientY) {
+  if (!isDraggingPhoto) return;
+
+  selectedPhotoOffsetX = clientX - dragStartX;
+  selectedPhotoOffsetY = clientY - dragStartY;
+
+  drawPhotoPreview();
+}
+
+function stopPhotoDrag() {
+  isDraggingPhoto = false;
+}
+
+/* =========================
+   MOUSE
+========================= */
+
+photoCropCanvas?.addEventListener("mousedown", (event) => {
+  event.preventDefault();
+
+  startPhotoDrag(event.clientX, event.clientY);
+});
+
+window.addEventListener("mousemove", (event) => {
+  movePhotoDrag(event.clientX, event.clientY);
+});
+
+window.addEventListener("mouseup", () => {
+  stopPhotoDrag();
+});
+
+/* =========================
+   TOUCH MOBILE
+========================= */
+
+photoCropCanvas?.addEventListener(
+  "touchstart",
+  (event) => {
+    const touch = event.touches[0];
+
+    if (!touch) return;
+
+    startPhotoDrag(touch.clientX, touch.clientY);
+  },
+  { passive: true }
+);
+
+window.addEventListener(
+  "touchmove",
+  (event) => {
+    const touch = event.touches[0];
+
+    if (!touch) return;
+
+    movePhotoDrag(touch.clientX, touch.clientY);
+  },
+  { passive: true }
+);
+
+window.addEventListener("touchend", () => {
+  stopPhotoDrag();
 });
 
 photoCropClose?.addEventListener("click", () => {
