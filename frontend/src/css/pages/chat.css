@@ -788,3 +788,38 @@ body {
     display: contents;
   }
 }
+
+/* =========================================================
+   FIX BOTTOM NAV CHAT SIN LOGO CENTRAL
+   Función:
+   - Centra los 4 iconos del bottom nav.
+   - Mantiene separación equilibrada.
+========================================================= */
+
+.chat-bottom-nav {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.chat-bottom-nav__item {
+  padding: 0;
+}
+
+.chat-bottom-nav__item svg {
+  display: block;
+}
+
+.chat-bottom-nav__item--home {
+  grid-column: 1;
+}
+
+.chat-bottom-nav__item--map {
+  grid-column: 2;
+}
+
+.chat-bottom-nav__item--chat {
+  grid-column: 3;
+}
+
+.chat-bottom-nav__item--profile {
+  grid-column: 4;
+}

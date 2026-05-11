@@ -116,8 +116,6 @@ function renderMessages() {
 
 document.querySelectorAll(".channel-card").forEach((button) => {
   button.addEventListener("click", () => {
-document.querySelectorAll(".channel-card").forEach((button) => {
-  button.addEventListener("click", () => {
     document.querySelectorAll(".channel-card").forEach((item) => {
       item.classList.remove("is-active");
     });
@@ -126,21 +124,12 @@ document.querySelectorAll(".channel-card").forEach((button) => {
     activeChannel = button.dataset.channel;
 
     if (channelSelectLabel) {
-      channelSelectLabel.textContent = button.querySelector("strong").textContent;
+      const channelName = button.querySelector("strong")?.textContent || "Canal";
+      channelSelectLabel.textContent = channelName;
     }
 
     channelSelect?.classList.remove("is-open");
 
-    renderMessages();
-  });
-});
-
-    document.querySelectorAll(".channel-card").forEach((item) => {
-      item.classList.remove("is-active");
-    });
-
-    button.classList.add("is-active");
-    activeChannel = button.dataset.channel;
     renderMessages();
   });
 });
@@ -181,6 +170,7 @@ const profileMenuButtonBottom = document.getElementById("profileMenuButtonBottom
 
 const profileDropdownDesktop = document.getElementById("profileDropdownDesktop");
 const profileDropdownMobile = document.getElementById("profileDropdownMobile");
+const profileMenuButtonHeader = document.getElementById("profileMenuButtonHeader");
 
 function closeProfileMenus() {
   profileDropdownDesktop?.classList.remove("is-open");
@@ -214,6 +204,10 @@ profileMenuButtonBottom?.addEventListener("click", (event) => {
 
 profileDropdownDesktop?.addEventListener("click", (event) => event.stopPropagation());
 profileDropdownMobile?.addEventListener("click", (event) => event.stopPropagation());
+profileMenuButtonHeader?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleDropdown(profileDropdownMobile);
+});
 
 document.addEventListener("click", closeProfileMenus);
 
